@@ -1,0 +1,62 @@
+<html>
+<head>
+    <!-- <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"> -->
+    <link type="text/css" rel="stylesheet" href="../lib/materialize/css/materialize.min.css" media="screen,projection"/>
+    <link rel="stylesheet" href="../css/route_select.css">
+
+    <script src="../lib/jquery-3.1.1.min.js"></script>
+    <script type="text/javascript" src="../lib/materialize/js/materialize.min.js"></script>
+
+    <!-- 올레맵 자바스크립트 V3 코어 -->
+    <script type="text/javascript" src="../lib/mapAPI.js"></script>
+    <!-- 올레맵 자바스크립트 V3 Spatial -->
+    <script type="text/javascript" src="../lib/mapsSpatialAPI.js"></script>
+    <script type="text/javascript" src="../javascript/route_select.js"></script>
+    <script type="text/javascript" src="../javascript/directions_service_callbacks.js"></script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+</head>
+<body onload="documentReady()">
+    <nav>
+        <div class="nav-wrapper valign-wrapper">
+            <a href="#" class="brand-logo left">WayKnower</a>
+        </div>
+    </nav>
+    <div class="location-field">
+        <div class="row">
+            <div class="col s12 valign-wrapper">
+                <img src="../lib/images/start.png">
+                <label id="departure">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col s12 valign-wrapper"">
+                <img src="../lib/images/pin.png">
+                <label id="destination">
+            </div>
+        </div>
+    </div>
+    <table class="route-field centered">
+        <tbody>
+            <tr>
+                <td class="button-field route-tab">
+                    <ul class="tabs tabs-transparent route-tab">
+                        <li class="tab route-tab"><a id="recommendedRouteBtn" class="active" onclick="recommendedRoute()">최적</a>/li>
+                        <li class="tab route-tab"><a id="shortestRouteBtn" onclick="shortestRoute()">최단</a>/li>
+                        <li class="tab route-tab"><a id="freeRouteBtn" onclick="freeRoute()">무료</a>/li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td class="map-field">
+                    <div id="routeInfo">
+                        
+                    </div>
+                    <div id="map_div" class="ollehmap ollehmap-event" data-id="ollehmap1481594207993" style="cursor: default;"></div>
+                    <div class="go-this-way-button">이 길로 가주세요</div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>
