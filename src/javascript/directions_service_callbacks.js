@@ -11,10 +11,10 @@ const DEFAULT_TAXI_FEE = 3000;
 
 var shortest_direction_result, recommended_direction_result, freeway_direction_result;
 
-var routeDirectionListBox = document.querySelector("#routeDirectionList");
-var routeDirectionDetails = document.querySelector("#routeDirectionDetails")
+const routeDirectionListBox = document.querySelector("#routeDirectionList");
+const routeDirectionDetails = document.querySelector("#routeDirectionDetails")
 
-const shortest_path_service_callback = function(data) {
+function shortest_path_service_callback(data) {
 	shortest_direction_result = directionsService.parseRoute(data);
 	var directionsRendererOptions = {
 		directions : shortest_direction_result, // 길찾기 결과. DirectionsService 의 parseRoute 결과
@@ -39,29 +39,9 @@ const shortest_path_service_callback = function(data) {
 	directionsRenderer.setMap(map);
 
 	boundList = getBoundsArray(shortest_direction_result);
-	// var polylines = document.querySelectorAll('#layer_container svg polyline');
-	// if(polylines.length > 0){
-	// 	polylines.forEach(function(polyline) {
-	// 		if(polyline.getAttribute("stroke") == SHORTEST_PATH_COLOR) {
-	// 			polyline.setAttribute("id", "Shortest");
-	// 			polyline.setAttribute("stroke", UNSELECTED_ROUTE_COLOR);
-	// 		}
-	// 	});
-	// }
-
-	// var vectors = map.getLayer("Vector")._vectors;
-	// if(vectors.length > 0) {
-	// 	vectors.forEach(function(polyline) {
-	// 		if(polyline._eventDom.id == "Recommended"){
-	// 			polyline._opts.strokeColor = SELECTED_ROUTE_COLOR;
-	// 		}else{
-	// 			polyline._opts.strokeColor = UNSELECTED_ROUTE_COLOR;
-	// 		}
-	// 	});
-	// }
 }
 
-const recommended_path_service_callback = function(data) {
+function recommended_path_service_callback(data) {
 	recommended_direction_result = directionsService.parseRoute(data);
 	var directionsRendererOptions = {
 		directions : recommended_direction_result, // 길찾기 결과. DirectionsService 의 parseRoute 결과
@@ -86,31 +66,9 @@ const recommended_path_service_callback = function(data) {
 	directionsRenderer.setMap(map);
 
 	boundList = getBoundsArray(recommended_direction_result);
-	// var polylines = document.querySelectorAll('#layer_container svg polyline');
-	// if(polylines.length > 0){
-	// 	polylines.forEach(function(polyline) {
-	// 		if(polyline.getAttribute("stroke") == RECOMMENDED_PATH_COLOR) {
-	// 			polyline.setAttribute("id", "Recommended");
-	// 			polyline.setAttribute("stroke", SELECTED_ROUTE_COLOR);
-	// 		}
-	// 	});
-	// }
-
-	// var vectors = map.getLayer("Vector")._vectors;
-	// if(vectors.length > 0) {
-	// 	vectors.forEach(function(polyline) {
-	// 		if(polyline._eventDom.id == "Recommended"){
-	// 			polyline._opts.strokeColor = SELECTED_ROUTE_COLOR;
-	// 		}else{
-	// 			polyline._opts.strokeColor = UNSELECTED_ROUTE_COLOR;
-	// 		}
-	// 	});
-	// }
-
-	// colorSelectedRoute("Recommended");
 }
 
-const freeway_path_service_callback = function(data) {
+function freeway_path_service_callback(data) {
 	freeway_direction_result = directionsService.parseRoute(data);
 	var directionsRendererOptions = {
 		directions : freeway_direction_result, // 길찾기 결과. DirectionsService 의 parseRoute 결과
@@ -135,29 +93,9 @@ const freeway_path_service_callback = function(data) {
 	directionsRenderer.setMap(map);
 
 	boundList = getBoundsArray(freeway_direction_result);
-	// var polylines = document.querySelectorAll('#layer_container svg polyline');
-	// if(polylines.length > 0){
-	// 	polylines.forEach(function(polyline) {
-	// 		if(polyline.getAttribute("stroke") == FREEWAY_PATH_COLOR) {
-	// 			polyline.setAttribute("id", "Freeway");
-	// 			polyline.setAttribute("stroke", UNSELECTED_ROUTE_COLOR);
-	// 		}
-	// 	});
-	// }
-
-	// var vectors = map.getLayer("Vector")._vectors;
-	// if(vectors.length > 0) {
-	// 	vectors.forEach(function(polyline) {
-	// 		if(polyline._eventDom.id == "Recommended"){
-	// 			polyline._opts.strokeColor = SELECTED_ROUTE_COLOR;
-	// 		}else{
-	// 			polyline._opts.strokeColor = UNSELECTED_ROUTE_COLOR;
-	// 		}
-	// 	});
-	// }
 }
 
-var getCallbackString = function(priorityType) {
+function getCallbackString(priorityType) {
 	switch(priorityType) {
 		case "0" : 
 			return "shortest_path_service_callback"
@@ -172,7 +110,7 @@ var getCallbackString = function(priorityType) {
 	}
 }
 
-var setRouteDirectionDetails = function(directionsResult) {
+function setRouteDirectionDetails(directionsResult) {
 	var displayArray = getDestinationRouteArray(directionsResult);
 	var duration = getDuration(directionsResult);
 	var distance = getDistance(directionsResult);
@@ -184,7 +122,7 @@ var setRouteDirectionDetails = function(directionsResult) {
 	routeDirectionDetails.querySelector("#fee").textContent = fee;
 }
 
-var getDestinationRouteArray = function(durationResult) {
+function getDestinationRouteArray(durationResult) {
 	var destinationArray = [];
 
 	if(durationResult.result.routes.length > 0) {
@@ -212,19 +150,19 @@ var getDestinationRouteArray = function(durationResult) {
 	return displayArray.toString().replace(/,/gi,"\u00a0\u00a0\u00a0\u00a0>\u00a0\u00a0\u00a0\u00a0");
 }
 
-var getDuration = function(directionsResult) {
+function getDuration(directionsResult) {
 	var durationMinutes = directionsResult.result.total_duration.value;
 	var elapsedHours = Math.floor(durationMinutes / 60);
 	var elapsedMinutes = Math.floor((durationMinutes / 60 - elapsedHours) * 60);
 	return "약 " + (elapsedHours > 0 ? elapsedHours + "시간" : "") + (elapsedMinutes > 0 ? elapsedMinutes + "분" : "");
 }
 
-var getDistance = function(directionsResult) {
+function getDistance(directionsResult) {
 	var distanceInKm = directionsResult.result.total_distance.value/1000;
 	return "약 " + parseFloat(distanceInKm).toFixed(1) + "km";
 }
 
-var getFee = function(directionsResult) {
+function getFee(directionsResult) {
 	var distanceInKm = directionsResult.result.total_distance.value/1000;
 	return "택시비 약 " + (Math.floor(distanceInKm) * 1000 <= DEFAULT_TAXI_FEE ? DEFAULT_TAXI_FEE : Math.floor(distanceInKm) * 1000) + "원";
 }

@@ -2,7 +2,52 @@ var map, directionsService;
 var priorityType;
 var departureLongitude, departureLatitude, destinationLatitude, destinationLongitude;
 var boundList = [];
-var getParameterByName = function(name, url) {
+
+const backButton = document.querySelector(".arrow-back");
+const goThisWayButton = document.querySelector(".go-this-way-button");
+
+// 초기화 함수
+backButton.addEventListener("click", function(e) {
+	location.replace("/");
+});
+
+var departure = getParameterByName('departure');
+var destination = getParameterByName('destination');
+document.querySelector('#departure').innerHTML = (departure.indexOf("대한민국") != -1 ? departure.substring(4) : departure);
+document.querySelector('#destination').innerHTML = (destination.indexOf("대한민국") != -1 ? destination.substring(4) : destination);
+
+departureLongitude = getParameterByName('depLng');
+departureLatitude = getParameterByName('depLat');
+destinationLongitude = getParameterByName('desLng');
+destinationLatitude = getParameterByName('desLat');
+directionsService = new olleh.maps.DirectionsService('frKMcOKXS*l9iO5g');
+var control = olleh.maps.control.Control;
+
+map = new olleh.maps.Map('map_div', {
+	center : new olleh.maps.LatLng(departureLatitude, departureLongitude),
+	zoom : 7,
+	zoomControl: true,
+	copyrightControl: false,
+	mapTypeControl: false,
+	measureControl: false,
+	scaleControl: false,
+	panControl: false,
+	disablePinchZoom: false,
+	disableMultiTabZoom: false,
+	zoomControlOptions: {
+		position: control.TOP_RIGHT, 
+		direction: control.VERTICAL,
+		top: 130,
+		right: 20,
+		style: olleh.maps.control.ZoomControl.SMALL
+	}
+});
+
+recommendedRoute();
+departureToDestinationMarker();
+
+
+function getParameterByName(name, url) {
 	if (!url) {
 		url = window.location.href;
 	}
@@ -14,50 +59,7 @@ var getParameterByName = function(name, url) {
 	return decodeURIComponent(results[2].replace(/\+/g, " "));
 }
 
-// 초기화 함수
-var documentReady = function() {
-	var backButton = document.querySelector(".arrow-back");
-	backButton.addEventListener("click", function(e) {
-		location.replace("/");
-	});
-
-	var departure = getParameterByName('departure');
-	var destination = getParameterByName('destination');
-	document.querySelector('#departure').innerHTML = (departure.indexOf("대한민국") != -1 ? departure.substring(4) : departure);
-	document.querySelector('#destination').innerHTML = (destination.indexOf("대한민국") != -1 ? destination.substring(4) : destination);
-
-	departureLongitude = getParameterByName('depLng');
-	departureLatitude = getParameterByName('depLat');
-	destinationLongitude = getParameterByName('desLng');
-	destinationLatitude = getParameterByName('desLat');
-	directionsService = new olleh.maps.DirectionsService('frKMcOKXS*l9iO5g');
-	var control = olleh.maps.control.Control;
-
-	map = new olleh.maps.Map('map_div', {
-		center : new olleh.maps.LatLng(departureLatitude, departureLongitude),
-		zoom : 7,
-		zoomControl: true,
-		copyrightControl: false,
-		mapTypeControl: false,
-		measureControl: false,
-		scaleControl: false,
-		panControl: false,
-		disablePinchZoom: false,
-		disableMultiTabZoom: false,
-		zoomControlOptions: {
-			position: control.TOP_RIGHT, 
-			direction: control.VERTICAL,
-			top: 130,
-			right: 20,
-			style: olleh.maps.control.ZoomControl.SMALL
-		}
-	});
-
-	recommendedRoute();
-	departureToDestinationMarker();
-}
-
-var clearMap = function() {
+function clearMap() {
 	var polylines = document.querySelectorAll('#layer_container svg polyline');
 	if(polylines.length > 0){
 		polylines.forEach(function(polyline) {
@@ -68,7 +70,7 @@ var clearMap = function() {
 	map.setCenter(new olleh.maps.LatLng(departureLatitude, departureLongitude)); 
 }
 
-var recommendedRoute = function() {
+function recommendedRoute() {
 	clearMap();
 	directionsService.route({
 		origin : new olleh.maps.UTMK.valueOf(new olleh.maps.LatLng(departureLatitude, departureLongitude)),
@@ -80,7 +82,8 @@ var recommendedRoute = function() {
 	getCallbackString(olleh.maps.DirectionsDrivePriority.PRIORITY_3)
 	); 
 }	
-var shortestRoute = function() {
+
+function shortestRoute() {
 	clearMap();
 	directionsService.route({
 		origin : new olleh.maps.UTMK.valueOf(new olleh.maps.LatLng(departureLatitude, departureLongitude)),
@@ -93,7 +96,7 @@ var shortestRoute = function() {
 	); 
 }
 
-var freeRoute = function() {
+function freeRoute() {
 	clearMap();
 	directionsService.route({
 		origin : new olleh.maps.UTMK.valueOf(new olleh.maps.LatLng(departureLatitude, departureLongitude)),
@@ -106,7 +109,7 @@ var freeRoute = function() {
 	);
 }
 
-var getBoundsArray = function(routeList) {
+function getBoundsArray(routeList) {
 	var routesArray = routeList.result.routes;
 	var boundsArray = [];
 
@@ -139,7 +142,7 @@ var getBoundsArray = function(routeList) {
 	return boundsArray;
 }
 
-var departureToDestinationMarker = function() {
+function departureToDestinationMarker() {
 	var departureIcon = {
 			url: '../lib/images/start.png',
 			size: new olleh.maps.Size(100, 100),
@@ -173,7 +176,7 @@ var departureToDestinationMarker = function() {
 	destinationMarker.setIcon(destinationIcon);
 }
 
-var setGeolocation = function() {
+function setGeolocation() {
 	var marker;
 	var options = {
 		enableHighAccuracy: false,
