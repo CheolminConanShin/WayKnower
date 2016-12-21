@@ -1,73 +1,121 @@
 const SHORTEST_PATH_COLOR = "green";
-const HIGHWAY_PATH_COLOR = "blue";
+const RECOMMENDED_PATH_COLOR = "blue";
 const FREEWAY_PATH_COLOR = "orange";
 const TRAFFIC_PATH_COLOR = "purple";
+
+const SELECTED_ROUTE_COLOR = "#01afaf";
+const UNSELECTED_ROUTE_COLOR = "#9b9b9b";
+
 const DEFAULT_TAXI_FEE = 3000;
+
+var shortest_direction_result, recommended_direction_result, freeway_direction_result;
 
 var routeDirectionListBox = document.querySelector("#routeDirectionList");
 var routeDirectionDetails = document.querySelector("#routeDirectionDetails")
 
 const shortest_path_service_callback = function(data) {
-	var directionsResult = directionsService.parseRoute(data);
-
+	shortest_direction_result = directionsService.parseRoute(data);
 	var directionsRendererOptions = {
-		directions : directionsResult, // 길찾기 결과. DirectionsService 의 parseRoute 결과
+		directions : shortest_direction_result, // 길찾기 결과. DirectionsService 의 parseRoute 결과
 		map : map,						// 길찾기 결과를 렌더링할 지도
 		keepView : false,				// 현재 뷰 유지 여부. true 이면 현재 뷰를 변경하지 않음. 디폴트 false
 		offMarkers : true,				// 마커 표시 억제 여부. true 이면 마커를 표시하지 않음. 디폴트 false
 		markerOptions : {			// 마커 옵션
 			draggable : false,			// 마커 드래깅 가능 여부. true 이면 마커를 드래그 할 수 있음. 디폴트 false,
-			cation : 'test caption',	// 마커 캡션 설정.
+			caption : 'test caption',	// 마커 캡션 설정.
 			title : '',					// 마커 타이틀 설정.
 			flat : true					// 마커의 그림자 표시여부. true이면 마커 그림자가 표시되지 않음. 디폴트 false
 		},
 		offPolylines : false,			// 경로 폴리라인 억제 여부. true 이면 경로를 표시하지 않음. 디폴트 false
 		polylineOptions : {				// 경로 폴리라인 스타일 옵션
 			strokeColor : SHORTEST_PATH_COLOR,	// 경로 폴리라인 칼라. 디폴트 #ff3131
-			strokeWeight : 5			// 경로 폴리라인 두께. 디폴트 5 
-		},
+			strokeWeight : 5	// 경로 폴리라인 두께. 디폴트 5 
+		}
 	}; 
 	var directionsRenderer = new olleh.maps.DirectionsRenderer(directionsRendererOptions);
 
-	setRouteDirectionDetails(directionsResult);
 	directionsRenderer.setMap(map);
+
+	var polylines = document.querySelectorAll('#layer_container svg polyline');
+	if(polylines.length > 0){
+		polylines.forEach(function(polyline) {
+			if(polyline.getAttribute("stroke") == SHORTEST_PATH_COLOR) {
+				polyline.setAttribute("id", "Shortest");
+				polyline.setAttribute("stroke", UNSELECTED_ROUTE_COLOR);
+			}
+		});
+	}
+
+	var vectors = map.getLayer("Vector")._vectors;
+	if(vectors.length > 0) {
+		vectors.forEach(function(polyline) {
+			if(polyline._eventDom.id == "Recommended"){
+				polyline._opts.strokeColor = SELECTED_ROUTE_COLOR;
+			}else{
+				polyline._opts.strokeColor = UNSELECTED_ROUTE_COLOR;
+			}
+		});
+	}
 }
 
-const highway_path_service_callback = function(data) {
-	var directionsResult = directionsService.parseRoute(data);
+const recommended_path_service_callback = function(data) {
+	recommended_direction_result = directionsService.parseRoute(data);
 	var directionsRendererOptions = {
-		directions : directionsResult, // 길찾기 결과. DirectionsService 의 parseRoute 결과
+		directions : recommended_direction_result, // 길찾기 결과. DirectionsService 의 parseRoute 결과
 		map : map,						// 길찾기 결과를 렌더링할 지도
 		keepView : false,				// 현재 뷰 유지 여부. true 이면 현재 뷰를 변경하지 않음. 디폴트 false
 		offMarkers : true,				// 마커 표시 억제 여부. true 이면 마커를 표시하지 않음. 디폴트 false
 		markerOptions : {				// 마커 옵션
 			draggable : false,			// 마커 드래깅 가능 여부. true 이면 마커를 드래그 할 수 있음. 디폴트 false,
-			cation : 'test caption',	// 마커 캡션 설정.
+			caption : 'test caption',	// 마커 캡션 설정.
 			title : '',					// 마커 타이틀 설정.
 			flat : true					// 마커의 그림자 표시여부. true이면 마커 그림자가 표시되지 않음. 디폴트 false
 		},
 		offPolylines : false,			// 경로 폴리라인 억제 여부. true 이면 경로를 표시하지 않음. 디폴트 false
 		polylineOptions : {				// 경로 폴리라인 스타일 옵션
-			strokeColor : HIGHWAY_PATH_COLOR,	// 경로 폴리라인 칼라. 디폴트 #ff3131
+			strokeColor : RECOMMENDED_PATH_COLOR,	// 경로 폴리라인 칼라. 디폴트 #ff3131
 			strokeWeight : 5			// 경로 폴리라인 두께. 디폴트 5 
 		},
 	}; 
 	var directionsRenderer = new olleh.maps.DirectionsRenderer(directionsRendererOptions);
 
-	setRouteDirectionDetails(directionsResult);
+	setRouteDirectionDetails(recommended_direction_result);
 	directionsRenderer.setMap(map);
+
+	var polylines = document.querySelectorAll('#layer_container svg polyline');
+	if(polylines.length > 0){
+		polylines.forEach(function(polyline) {
+			if(polyline.getAttribute("stroke") == RECOMMENDED_PATH_COLOR) {
+				polyline.setAttribute("id", "Recommended");
+				polyline.setAttribute("stroke", SELECTED_ROUTE_COLOR);
+			}
+		});
+	}
+
+	var vectors = map.getLayer("Vector")._vectors;
+	if(vectors.length > 0) {
+		vectors.forEach(function(polyline) {
+			if(polyline._eventDom.id == "Recommended"){
+				polyline._opts.strokeColor = SELECTED_ROUTE_COLOR;
+			}else{
+				polyline._opts.strokeColor = UNSELECTED_ROUTE_COLOR;
+			}
+		});
+	}
+
+	colorSelectedRoute("Recommended");
 }
 
 const freeway_path_service_callback = function(data) {
-	var directionsResult = directionsService.parseRoute(data);
+	freeway_direction_result = directionsService.parseRoute(data);
 	var directionsRendererOptions = {
-		directions : directionsResult, // 길찾기 결과. DirectionsService 의 parseRoute 결과
+		directions : freeway_direction_result, // 길찾기 결과. DirectionsService 의 parseRoute 결과
 		map : map,						// 길찾기 결과를 렌더링할 지도
 		keepView : false,				// 현재 뷰 유지 여부. true 이면 현재 뷰를 변경하지 않음. 디폴트 false
 		offMarkers : true,				// 마커 표시 억제 여부. true 이면 마커를 표시하지 않음. 디폴트 false
 		markerOptions : {				// 마커 옵션
 			draggable : false,			// 마커 드래깅 가능 여부. true 이면 마커를 드래그 할 수 있음. 디폴트 false,
-			cation : 'test caption',	// 마커 캡션 설정.
+			caption : 'test caption',	// 마커 캡션 설정.
 			title : '',					// 마커 타이틀 설정.
 			flat : true					// 마커의 그림자 표시여부. true이면 마커 그림자가 표시되지 않음. 디폴트 false
 		},
@@ -79,33 +127,30 @@ const freeway_path_service_callback = function(data) {
 	}; 
 	var directionsRenderer = new olleh.maps.DirectionsRenderer(directionsRendererOptions);
 
-	setRouteDirectionDetails(directionsResult);
+	// setRouteDirectionDetails(freeway_direction_result);
 	directionsRenderer.setMap(map);
-}
 
-const traffic_path_service_callback = function(data) {
-	var directionsResult = directionsService.parseRoute(data);
-	var directionsRendererOptions = {
-		directions : directionsResult, // 길찾기 결과. DirectionsService 의 parseRoute 결과
-		map : map,						// 길찾기 결과를 렌더링할 지도
-		keepView : false,				// 현재 뷰 유지 여부. true 이면 현재 뷰를 변경하지 않음. 디폴트 false
-		offMarkers : true,				// 마커 표시 억제 여부. true 이면 마커를 표시하지 않음. 디폴트 false
-		markerOptions : {				// 마커 옵션
-			draggable : false,			// 마커 드래깅 가능 여부. true 이면 마커를 드래그 할 수 있음. 디폴트 false,
-			cation : 'test caption',	// 마커 캡션 설정.
-			title : '',					// 마커 타이틀 설정.
-			flat : true					// 마커의 그림자 표시여부. true이면 마커 그림자가 표시되지 않음. 디폴트 false
-		},
-		offPolylines : false,			// 경로 폴리라인 억제 여부. true 이면 경로를 표시하지 않음. 디폴트 false
-		polylineOptions : {				// 경로 폴리라인 스타일 옵션
-			strokeColor : traffic_path_color,	// 경로 폴리라인 칼라. 디폴트 #ff3131
-			strokeWeight : 5			// 경로 폴리라인 두께. 디폴트 5 
-		},
-	}; 
-	var directionsRenderer = new olleh.maps.DirectionsRenderer(directionsRendererOptions);
+	var polylines = document.querySelectorAll('#layer_container svg polyline');
+	if(polylines.length > 0){
+		polylines.forEach(function(polyline) {
+			if(polyline.getAttribute("stroke") == FREEWAY_PATH_COLOR) {
+				polyline.setAttribute("id", "Freeway");
+				polyline.setAttribute("stroke", UNSELECTED_ROUTE_COLOR);
+			}
+		});
+	}
 
-	setRouteDirectionDetails(directionsResult);
-	directionsRenderer.setMap(map);
+	var vectors = map.getLayer("Vector")._vectors;
+	if(vectors.length > 0) {
+		vectors.forEach(function(polyline) {
+			if(polyline._eventDom.id == "Recommended"){
+				polyline._opts.strokeColor = SELECTED_ROUTE_COLOR;
+			}else{
+				polyline._opts.strokeColor = UNSELECTED_ROUTE_COLOR;
+			}
+		});
+	}
+
 }
 
 var getCallbackString = function(priorityType) {
@@ -117,7 +162,7 @@ var getCallbackString = function(priorityType) {
 		case "2" : 
 			return "freeway_path_service_callback"
 		case "3" : 
-			return "traffic_path_service_callback"
+			return "recommended_path_service_callback"
 		default : 
 			return "traffic_path_service_callback"
 	}

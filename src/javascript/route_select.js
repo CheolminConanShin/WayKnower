@@ -22,8 +22,8 @@ var documentReady = function() {
 
 	var departure = getParameterByName('departure');
 	var destination = getParameterByName('destination');
-	document.querySelector('#departure').innerHTML = departure;
-	document.querySelector('#destination').innerHTML = destination;
+	document.querySelector('#departure').innerHTML = departure.substring(4);
+	document.querySelector('#destination').innerHTML = destination.substring(4);
 
 	departureLongitude = getParameterByName('depLng');
 	departureLatitude = getParameterByName('depLat');
@@ -68,7 +68,7 @@ var documentReady = function() {
 		marker.setFlat(true);
 	});
 
-	recommendedRoute();
+	drawRoutes();
 }
 
 var clearMap = function() {
@@ -82,8 +82,17 @@ var clearMap = function() {
 	map.setCenter(new olleh.maps.LatLng(departureLatitude, departureLongitude)); 
 }
 
-var recommendedRoute = function() {
-	clearMap();
+var drawRoutes = function() {
+	directionsService.route({
+		origin : new olleh.maps.UTMK.valueOf(new olleh.maps.LatLng(departureLatitude, departureLongitude)),
+		destination : new olleh.maps.UTMK.valueOf(new olleh.maps.LatLng(destinationLatitude, destinationLongitude)),
+		projection : olleh.maps.DirectionsProjection.UTM_K, 
+		travelMode : olleh.maps.DirectionsTravelMode.DRIVING,
+		priority : olleh.maps.DirectionsDrivePriority.PRIORITY_3
+	}, 
+	getCallbackString(olleh.maps.DirectionsDrivePriority.PRIORITY_3)
+	); 
+
 	directionsService.route({
 		origin : new olleh.maps.UTMK.valueOf(new olleh.maps.LatLng(departureLatitude, departureLongitude)),
 		destination : new olleh.maps.UTMK.valueOf(new olleh.maps.LatLng(destinationLatitude, destinationLongitude)),
@@ -93,21 +102,7 @@ var recommendedRoute = function() {
 	}, 
 	getCallbackString(olleh.maps.DirectionsDrivePriority.PRIORITY_0)
 	); 
-}	
-var shortestRoute = function() {
-	clearMap();
-	directionsService.route({
-		origin : new olleh.maps.UTMK.valueOf(new olleh.maps.LatLng(departureLatitude, departureLongitude)),
-		destination : new olleh.maps.UTMK.valueOf(new olleh.maps.LatLng(destinationLatitude, destinationLongitude)),
-		projection : olleh.maps.DirectionsProjection.UTM_K, 
-		travelMode : olleh.maps.DirectionsTravelMode.DRIVING,
-		priority : olleh.maps.DirectionsDrivePriority.PRIORITY_1
-	}, 
-	getCallbackString(olleh.maps.DirectionsDrivePriority.PRIORITY_1)
-	); 
-}
-var freeRoute = function() {
-	clearMap();
+
 	directionsService.route({
 		origin : new olleh.maps.UTMK.valueOf(new olleh.maps.LatLng(departureLatitude, departureLongitude)),
 		destination : new olleh.maps.UTMK.valueOf(new olleh.maps.LatLng(destinationLatitude, destinationLongitude)),
@@ -116,6 +111,49 @@ var freeRoute = function() {
 		priority : olleh.maps.DirectionsDrivePriority.PRIORITY_2
 	}, 
 	getCallbackString(olleh.maps.DirectionsDrivePriority.PRIORITY_2)
-	); 
+	);
 }
 
+var recommendedRoute = function() {
+	setRouteDirectionDetails(recommended_direction_result);
+	colorSelectedRoute("Recommended");
+}	
+var shortestRoute = function() {
+	setRouteDirectionDetails(shortest_direction_result);
+	colorSelectedRoute("Shortest");
+}
+
+var freeRoute = function() {
+	setRouteDirectionDetails(freeway_direction_result);
+	colorSelectedRoute("Freeway");
+}
+
+var colorSelectedRoute = function(routeName) {
+	var polylines = document.querySelectorAll('#layer_container svg polyline');
+	if(polylines.length > 0){
+		var polylineGroup = polylines[0].parentNode;
+		var removedPolyline;
+
+		var vectors = map.getLayer("Vector")._vectors;
+		if(vectors.length > 0) {
+			vectors.forEach(function(polyline) {
+				if(polyline._eventDom.id == routeName){
+					polyline._opts.strokeColor = SELECTED_ROUTE_COLOR;
+				}else{
+					polyline._opts.strokeColor = UNSELECTED_ROUTE_COLOR;
+				}
+			});
+		}
+
+		polylines.forEach(function(polyline) {
+			if(polyline.getAttribute("id") == routeName) {
+				polyline.setAttribute("stroke", SELECTED_ROUTE_COLOR);
+				removedPolyline = polylineGroup.removeChild(polyline);
+			} else {
+				polyline.setAttribute("stroke", UNSELECTED_ROUTE_COLOR);
+			};
+		});
+
+		polylineGroup.appendChild(removedPolyline);
+	}
+}
