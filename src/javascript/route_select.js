@@ -227,7 +227,7 @@ var setGeolocation = function() {
 		var currentPosition = new olleh.maps.LatLng(position.coords.latitude, position.coords.longitude);
 		var boundCheckFlag = false;
 		boundList.forEach(function(bound) {
-			if(bound.almostEquals(new olleh.maps.Bounds(olleh.maps.UTMK.valueOf(currentPosition), olleh.maps.UTMK.valueOf(currentPosition)), 300)) {
+			if(bound.almostEquals(new olleh.maps.Bounds(olleh.maps.UTMK.valueOf(currentPosition), olleh.maps.UTMK.valueOf(currentPosition)), 500)) {
 				boundCheckFlag = true;
 			}
 		});
@@ -239,10 +239,7 @@ var setGeolocation = function() {
 			}
 		});
 		marker.setFlat(true);
-		if(boundCheckFlag) {
-			alert("잘 가고있다");
-			window.navigator.vibrate(1000);
-		}else{
+		if(!boundCheckFlag) {
 			alert("이탈");
 			window.navigator.vibrate(1000);
 		}
