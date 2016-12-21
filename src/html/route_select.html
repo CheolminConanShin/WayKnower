@@ -3,17 +3,6 @@
     <!-- <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"> -->
     <link type="text/css" rel="stylesheet" href="../lib/materialize/css/materialize.min.css" media="screen,projection"/>
     <link rel="stylesheet" href="../css/route_select.css">
-
-    <script src="../lib/jquery-3.1.1.min.js"></script>
-    <script type="text/javascript" src="../lib/materialize/js/materialize.min.js"></script>
-
-    <!-- 올레맵 자바스크립트 V3 코어 -->
-    <script type="text/javascript" src="../lib/mapAPI.js"></script>
-    <!-- 올레맵 자바스크립트 V3 Spatial -->
-    <script type="text/javascript" src="../lib/mapsSpatialAPI.js"></script>
-    <script type="text/javascript" src="../javascript/route_select.js"></script>
-    <script type="text/javascript" src="../javascript/directions_service_callbacks.js"></script>
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
 </head>
 <body onload="documentReady()">
@@ -49,8 +38,15 @@
             </tr>
             <tr>
                 <td class="map-field">
-                    <div id="routeInfo">
-                        
+                    <div id="routeInfoBox">
+                        <div id="routeDirectionList" class="left-align"></div>
+                        <div id="routeDirectionDetails" class="left-align valign-wrapper">
+                            <div id="duration"></div>
+                            <img class="division">
+                            <div id="distance"></div>
+                            <img class="division">
+                            <div id="fee"></div>
+                        </div>
                     </div>
                     <div id="map_div" class="ollehmap ollehmap-event" data-id="ollehmap1481594207993" style="cursor: default;"></div>
                     <div class="go-this-way-button">이 길로 가주세요</div>
@@ -59,4 +55,13 @@
         </tbody>
     </table>
 </body>
+<script src="../lib/jquery-3.1.1.min.js"></script>
+<script type="text/javascript" src="../lib/materialize/js/materialize.min.js"></script>
+
+<!-- 올레맵 자바스크립트 V3 코어 -->
+<script type="text/javascript" src="../lib/mapAPI.js"></script>
+<!-- 올레맵 자바스크립트 V3 Spatial -->
+<script type="text/javascript" src="../lib/mapsSpatialAPI.js"></script>
+<script type="text/javascript" src="../javascript/route_select.js"></script>
+<script type="text/javascript" src="../javascript/directions_service_callbacks.js"></script>
 </html>

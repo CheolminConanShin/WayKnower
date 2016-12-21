@@ -3,6 +3,10 @@ const HIGHWAY_PATH_COLOR = "blue";
 const FREEWAY_PATH_COLOR = "orange";
 const TRAFFIC_PATH_COLOR = "purple";
 const DEFAULT_TAXI_FEE = 3000;
+
+let routeDirectionListBox = document.querySelector("#routeDirectionList");
+let routeDirectionDetails = document.querySelector("#routeDirectionDetails")
+
 const shortest_path_service_callback = function(data) {
 	var directionsResult = directionsService.parseRoute(data);
 
@@ -25,17 +29,12 @@ const shortest_path_service_callback = function(data) {
 	}; 
 	var directionsRenderer = new olleh.maps.DirectionsRenderer(directionsRendererOptions);
 
-	var displayArray = getDestinationRouteArray(directionsResult.result.routes);
-	var duration = getDuration(directionsResult);
-	var distance = getDistance(directionsResult);
-	var fee = getFee(directionsResult);
-
+	setRouteDirectionDetails(directionsResult);
 	directionsRenderer.setMap(map);
 }
 
 const highway_path_service_callback = function(data) {
 	var directionsResult = directionsService.parseRoute(data);
-	var displayArray = getDestinationRouteArray(directionsResult.result.routes);
 	var directionsRendererOptions = {
 		directions : directionsResult, // 길찾기 결과. DirectionsService 의 parseRoute 결과
 		map : map,						// 길찾기 결과를 렌더링할 지도
@@ -54,12 +53,13 @@ const highway_path_service_callback = function(data) {
 		},
 	}; 
 	var directionsRenderer = new olleh.maps.DirectionsRenderer(directionsRendererOptions);
+
+	setRouteDirectionDetails(directionsResult);
 	directionsRenderer.setMap(map);
 }
 
 const freeway_path_service_callback = function(data) {
 	var directionsResult = directionsService.parseRoute(data);
-	var displayArray = getDestinationRouteArray(directionsResult.result.routes);
 	var directionsRendererOptions = {
 		directions : directionsResult, // 길찾기 결과. DirectionsService 의 parseRoute 결과
 		map : map,						// 길찾기 결과를 렌더링할 지도
@@ -78,12 +78,13 @@ const freeway_path_service_callback = function(data) {
 		},
 	}; 
 	var directionsRenderer = new olleh.maps.DirectionsRenderer(directionsRendererOptions);
+
+	setRouteDirectionDetails(directionsResult);
 	directionsRenderer.setMap(map);
 }
 
 const traffic_path_service_callback = function(data) {
 	var directionsResult = directionsService.parseRoute(data);
-	var displayArray = getDestinationRouteArray(directionsResult.result.routes);
 	var directionsRendererOptions = {
 		directions : directionsResult, // 길찾기 결과. DirectionsService 의 parseRoute 결과
 		map : map,						// 길찾기 결과를 렌더링할 지도
@@ -102,34 +103,46 @@ const traffic_path_service_callback = function(data) {
 		},
 	}; 
 	var directionsRenderer = new olleh.maps.DirectionsRenderer(directionsRendererOptions);
+
+	setRouteDirectionDetails(directionsResult);
 	directionsRenderer.setMap(map);
 }
 
 var getCallbackString = function(priorityType) {
 	switch(priorityType) {
 		case "0" : 
-		return "shortest_path_service_callback"
+			return "shortest_path_service_callback"
 		case "1" : 
-		return "highway_path_service_callback"
+			return "highway_path_service_callback"
 		case "2" : 
-		return "freeway_path_service_callback"
+			return "freeway_path_service_callback"
 		case "3" : 
-		return "traffic_path_service_callback"
+			return "traffic_path_service_callback"
 		default : 
-		return "traffic_path_service_callback"
+			return "traffic_path_service_callback"
 	}
 }
 
+let setRouteDirectionDetails = (directionsResult) => {
+	var displayArray = getDestinationRouteArray(directionsResult);
+	var duration = getDuration(directionsResult);
+	var distance = getDistance(directionsResult);
+	var fee = getFee(directionsResult);
 
+	routeDirectionListBox.textContent = displayArray;
+	routeDirectionDetails.querySelector("#duration").textContent = duration;
+	routeDirectionDetails.querySelector("#distance").textContent = distance;
+	routeDirectionDetails.querySelector("#fee").textContent = fee;
+}
 
-var getDestinationRouteArray = function(routes) {
+let getDestinationRouteArray = function(durationResult) {
 	var destinationArray = [];
-	for(var route of routes) {
-		if(route.node_name != "") {
+	for(var route of durationResult.result.routes) {
+		if(route.node_name != "" && route.node_name != undefined) {
 			destinationArray.push(route.node_name);
 		}
 	}
-
+	
 	var uniqueArray = destinationArray.filter(function(item, pos, self) {
 		return self.indexOf(item) == pos;
 	});
@@ -138,27 +151,28 @@ var getDestinationRouteArray = function(routes) {
 	if(uniqueArray.length > 5) {
 		var mok = uniqueArray.length/5;
 		for(var cnt = 0; cnt < 5; cnt++) {
-			displayArray.push(uniqueArray[mok*cnt]);
+			displayArray.push(uniqueArray[Math.floor(mok*cnt)]);
 		}
 	} else {
 		displayArray = uniqueArray;
 	}
 
-	return displayArray;
+	return displayArray.toString().replace(/,/gi,"\u00a0\u00a0\u00a0\u00a0>\u00a0\u00a0\u00a0\u00a0");
 }
 
-var getDuration = function(directionsResult) {
-	var elapsedHours = Math.floor(directionsResult.result.total_duration.value / 60);
-	var elapsedMinutes = Math.floor((directionsResult.result.total_duration.value / 60 - elapsedHours) * 100);
+let getDuration = function(directionsResult) {
+	var durationMinutes = directionsResult.result.total_duration.value;
+	var elapsedHours = Math.floor(durationMinutes / 60);
+	var elapsedMinutes = Math.floor((durationMinutes / 60 - elapsedHours) * 60);
 	return "약 " + (elapsedHours > 0 ? elapsedHours + "시간" : "") + (elapsedMinutes > 0 ? elapsedMinutes + "분" : "");
 }
 
-var getDistance = function(directionsResult) {
+let getDistance = function(directionsResult) {
 	var distanceInKm = directionsResult.result.total_distance.value/1000;
-	return parseFloat(distanceInKm).toFixed(2) + "km";
+	return "약 " + parseFloat(distanceInKm).toFixed(2) + "km";
 }
 
-var getFee = function(directionsResult) {
+let getFee = function(directionsResult) {
 	var distanceInKm = directionsResult.result.total_distance.value/1000;
-	return Math.floor(distanceInKm) * 1000 <= DEFAULT_TAXI_FEE ? DEFAULT_TAXI_FEE : Math.floor(distanceInKm) * 1000;
+	return "택시비 약 " + (Math.floor(distanceInKm) * 1000 <= DEFAULT_TAXI_FEE ? DEFAULT_TAXI_FEE : Math.floor(distanceInKm) * 1000) + "원";
 }
