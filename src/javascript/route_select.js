@@ -54,6 +54,11 @@ var documentReady = function() {
 	});
 	
 	var marker;
+	var options = {
+		enableHighAccuracy: false,
+		timeout: 1000,
+		maximumAge: 0
+	};
 	navigator.geolocation.watchPosition(function(position) {
 		if(marker != undefined){
 			marker.erase();
@@ -61,15 +66,10 @@ var documentReady = function() {
 		var currentPosition = new olleh.maps.LatLng(position.coords.latitude, position.coords.longitude);
 		var boundCheckFlag = false;
 		boundList.forEach(function(bound) {
-			if(bound.contains(olleh.maps.UTMK.valueOf(currentPosition))) {
+			if(bound.almostEquals(new olleh.maps.Bounds(olleh.maps.UTMK.valueOf(currentPosition), olleh.maps.UTMK.valueOf(currentPosition)), 300)) {
 				boundCheckFlag = true;
 			}
-		})
-		if(boundCheckFlag) {
-			window.navigator.vibrate(2000);
-		}else{
-			window.navigator.vibrate(2000);
-		}
+		});
 		marker = new olleh.maps.overlay.Marker({
 			position: currentPosition,
 			map: map,
@@ -78,8 +78,14 @@ var documentReady = function() {
 			}
 		});
 		marker.setFlat(true);
-	});
-
+		if(boundCheckFlag) {
+			alert("잘 가고있다");
+			window.navigator.vibrate(1000);
+		}else{
+			alert("이탈");
+			window.navigator.vibrate(1000);
+		}
+	},null,options);
 	drawRoutes();
 }
 
@@ -186,14 +192,18 @@ var getBoundsArray = function(routeList) {
 
 		if(fitstPointX <= secondPointX) {
 			lessX = fitstPointX;
-		} else {
 			moreX = secondPointX;
+		} else {
+			lessX = secondPointX;
+			moreX = fitstPointX;
 		}
 
 		if(fitstPointY <= secondPointY) {
 			lessY = fitstPointY;
-		} else {
 			moreY = secondPointY;
+		} else {
+			lessY = secondPointY;
+			moreY = fitstPointY;
 		}
 		var leftBottom = new olleh.maps.UTMK(lessX, lessY);
 		var rightTop = new olleh.maps.UTMK(moreX, moreY);
