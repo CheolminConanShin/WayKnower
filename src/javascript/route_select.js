@@ -54,43 +54,7 @@ var documentReady = function() {
 	});
 
 	recommendedRoute();
-	
 	departureToDestinationMarker();
-
-	var marker;
-	var options = {
-		enableHighAccuracy: false,
-		timeout: 1000,
-		maximumAge: 0
-	};
-
-	navigator.geolocation.watchPosition(function(position) {
-		if(marker != undefined){
-			marker.erase();
-		}
-		var currentPosition = new olleh.maps.LatLng(position.coords.latitude, position.coords.longitude);
-		var boundCheckFlag = false;
-		boundList.forEach(function(bound) {
-			if(bound.almostEquals(new olleh.maps.Bounds(olleh.maps.UTMK.valueOf(currentPosition), olleh.maps.UTMK.valueOf(currentPosition)), 300)) {
-				boundCheckFlag = true;
-			}
-		});
-		marker = new olleh.maps.overlay.Marker({
-			position: currentPosition,
-			map: map,
-			icon: {
-				url: '../lib/images/my_location.png'
-			}
-		});
-		marker.setFlat(true);
-		if(boundCheckFlag) {
-			alert("잘 가고있다");
-			window.navigator.vibrate(1000);
-		}else{
-			alert("이탈");
-			window.navigator.vibrate(1000);
-		}
-	}, null, options);
 }
 
 var clearMap = function() {
@@ -215,6 +179,13 @@ var getBoundsArray = function(routeList) {
 }
 
 var departureToDestinationMarker = function() {
+	var departureIcon = {
+			url: '../lib/images/start.png',
+			size: new olleh.maps.Size(100, 100),
+			anchor: new olleh.maps.Point(10, 30)
+		};
+	
+
 	var departureMarker = new olleh.maps.overlay.Marker({
 			position: new olleh.maps.LatLng(departureLatitude, departureLongitude),
 			map: map,
@@ -223,7 +194,13 @@ var departureToDestinationMarker = function() {
 			}
 		});
 	departureMarker.setFlat(true);
+    departureMarker.setIcon(departureIcon);
 
+	var destinationIcon = {
+			url: '../lib/images/pin.png',
+			size: new olleh.maps.Size(100, 100), 
+			anchor: new olleh.maps.Point(10, 30)
+		};
 	var destinationMarker = new olleh.maps.overlay.Marker({
 			position: new olleh.maps.LatLng(destinationLatitude, destinationLongitude),
 			map: map,
@@ -232,4 +209,42 @@ var departureToDestinationMarker = function() {
 			}
 		});
 	destinationMarker.setFlat(true);
+	destinationMarker.setIcon(destinationIcon);
+}
+
+var setGeolocation = function() {
+	var marker;
+	var options = {
+		enableHighAccuracy: false,
+		timeout: 3000,
+		maximumAge: 0
+	};
+
+	navigator.geolocation.watchPosition(function(position) {
+		if(marker != undefined){
+			marker.erase();
+		}
+		var currentPosition = new olleh.maps.LatLng(position.coords.latitude, position.coords.longitude);
+		var boundCheckFlag = false;
+		boundList.forEach(function(bound) {
+			if(bound.almostEquals(new olleh.maps.Bounds(olleh.maps.UTMK.valueOf(currentPosition), olleh.maps.UTMK.valueOf(currentPosition)), 300)) {
+				boundCheckFlag = true;
+			}
+		});
+		marker = new olleh.maps.overlay.Marker({
+			position: currentPosition,
+			map: map,
+			icon: {
+				url: '../lib/images/my_location.png'
+			}
+		});
+		marker.setFlat(true);
+		if(boundCheckFlag) {
+			alert("잘 가고있다");
+			window.navigator.vibrate(1000);
+		}else{
+			alert("이탈");
+			window.navigator.vibrate(1000);
+		}
+	}, null, options);
 }
