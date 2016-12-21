@@ -55,12 +55,15 @@ var documentReady = function() {
 
 	recommendedRoute();
 	
+	departureToDestinationMarker();
+
 	var marker;
 	var options = {
 		enableHighAccuracy: false,
 		timeout: 1000,
 		maximumAge: 0
 	};
+
 	navigator.geolocation.watchPosition(function(position) {
 		if(marker != undefined){
 			marker.erase();
@@ -209,4 +212,24 @@ var getBoundsArray = function(routeList) {
 		boundsArray.push(new olleh.maps.Bounds(leftBottom, rightTop));
 	}
 	return boundsArray;
+}
+
+var departureToDestinationMarker = function() {
+	var departureMarker = new olleh.maps.overlay.Marker({
+			position: new olleh.maps.LatLng(departureLatitude, departureLongitude),
+			map: map,
+			icon: {
+				url: '../lib/images/start.png'
+			}
+		});
+	departureMarker.setFlat(true);
+
+	var destinationMarker = new olleh.maps.overlay.Marker({
+			position: new olleh.maps.LatLng(destinationLatitude, destinationLongitude),
+			map: map,
+			icon: {
+				url: '../lib/images/pin.png'
+			}
+		});
+	destinationMarker.setFlat(true);
 }

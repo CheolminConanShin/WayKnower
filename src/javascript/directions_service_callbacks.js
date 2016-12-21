@@ -30,7 +30,7 @@ const shortest_path_service_callback = function(data) {
 		offPolylines : false,			// 경로 폴리라인 억제 여부. true 이면 경로를 표시하지 않음. 디폴트 false
 		polylineOptions : {				// 경로 폴리라인 스타일 옵션
 			strokeColor : SHORTEST_PATH_COLOR,	// 경로 폴리라인 칼라. 디폴트 #ff3131
-			strokeWeight : 5	// 경로 폴리라인 두께. 디폴트 5 
+			strokeWeight : 3	// 경로 폴리라인 두께. 디폴트 5 
 		}
 	}; 
 	var directionsRenderer = new olleh.maps.DirectionsRenderer(directionsRendererOptions);
@@ -77,7 +77,7 @@ const recommended_path_service_callback = function(data) {
 		offPolylines : false,			// 경로 폴리라인 억제 여부. true 이면 경로를 표시하지 않음. 디폴트 false
 		polylineOptions : {				// 경로 폴리라인 스타일 옵션
 			strokeColor : RECOMMENDED_PATH_COLOR,	// 경로 폴리라인 칼라. 디폴트 #ff3131
-			strokeWeight : 5			// 경로 폴리라인 두께. 디폴트 5 
+			strokeWeight : 3			// 경로 폴리라인 두께. 디폴트 5 
 		},
 	}; 
 	var directionsRenderer = new olleh.maps.DirectionsRenderer(directionsRendererOptions);
@@ -126,7 +126,7 @@ const freeway_path_service_callback = function(data) {
 		offPolylines : false,			// 경로 폴리라인 억제 여부. true 이면 경로를 표시하지 않음. 디폴트 false
 		polylineOptions : {				// 경로 폴리라인 스타일 옵션
 			strokeColor : FREEWAY_PATH_COLOR,	// 경로 폴리라인 칼라. 디폴트 #ff3131
-			strokeWeight : 5			// 경로 폴리라인 두께. 디폴트 5 
+			strokeWeight : 3			// 경로 폴리라인 두께. 디폴트 5 
 		},
 	}; 
 	var directionsRenderer = new olleh.maps.DirectionsRenderer(directionsRendererOptions);
