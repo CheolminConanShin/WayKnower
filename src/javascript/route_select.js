@@ -70,9 +70,6 @@ var clearMap = function() {
 
 var recommendedRoute = function() {
 	clearMap();
-	// setRouteDirectionDetails(recommended_direction_result);
-	// boundList = getBoundsArray(recommended_direction_result);
-	// colorSelectedRoute("Recommended");
 	directionsService.route({
 		origin : new olleh.maps.UTMK.valueOf(new olleh.maps.LatLng(departureLatitude, departureLongitude)),
 		destination : new olleh.maps.UTMK.valueOf(new olleh.maps.LatLng(destinationLatitude, destinationLongitude)),
@@ -85,9 +82,6 @@ var recommendedRoute = function() {
 }	
 var shortestRoute = function() {
 	clearMap();
-	// setRouteDirectionDetails(shortest_direction_result);
-	// boundList = getBoundsArray(shortest_direction_result);
-	// colorSelectedRoute("Shortest");
 	directionsService.route({
 		origin : new olleh.maps.UTMK.valueOf(new olleh.maps.LatLng(departureLatitude, departureLongitude)),
 		destination : new olleh.maps.UTMK.valueOf(new olleh.maps.LatLng(destinationLatitude, destinationLongitude)),
@@ -101,9 +95,6 @@ var shortestRoute = function() {
 
 var freeRoute = function() {
 	clearMap();
-	// setRouteDirectionDetails(freeway_direction_result);
-	// boundList = getBoundsArray(freeway_direction_result);
-	// colorSelectedRoute("Freeway");
 	directionsService.route({
 		origin : new olleh.maps.UTMK.valueOf(new olleh.maps.LatLng(departureLatitude, departureLongitude)),
 		destination : new olleh.maps.UTMK.valueOf(new olleh.maps.LatLng(destinationLatitude, destinationLongitude)),
@@ -114,36 +105,6 @@ var freeRoute = function() {
 	getCallbackString(olleh.maps.DirectionsDrivePriority.PRIORITY_2)
 	);
 }
-
-// var colorSelectedRoute = function(routeName) {
-// 	var polylines = document.querySelectorAll('#layer_container svg polyline');
-// 	if(polylines.length > 0){
-// 		var polylineGroup = polylines[0].parentNode;
-// 		var removedPolyline;
-
-// 		var vectors = map.getLayer("Vector")._vectors;
-// 		if(vectors.length > 0) {
-// 			vectors.forEach(function(polyline) {
-// 				if(polyline._eventDom.id == routeName){
-// 					polyline._opts.strokeColor = SELECTED_ROUTE_COLOR;
-// 				}else{
-// 					polyline._opts.strokeColor = UNSELECTED_ROUTE_COLOR;
-// 				}
-// 			});
-// 		}
-
-// 		polylines.forEach(function(polyline) {
-// 			if(polyline.getAttribute("id") == routeName) {
-// 				polyline.setAttribute("stroke", SELECTED_ROUTE_COLOR);
-// 				removedPolyline = polylineGroup.removeChild(polyline);
-// 			} else {
-// 				polyline.setAttribute("stroke", UNSELECTED_ROUTE_COLOR);
-// 			};
-// 		});
-
-// 		polylineGroup.appendChild(removedPolyline);
-// 	}
-// }
 
 var getBoundsArray = function(routeList) {
 	var routesArray = routeList.result.routes;
