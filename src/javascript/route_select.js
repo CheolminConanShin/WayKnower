@@ -2,15 +2,15 @@ var map, directionsService;
 var priorityType;
 var departureLongitude, departureLatitude, destinationLatitude, destinationLongitude;
 var getParameterByName = function(name, url) {
-    if (!url) {
-      url = window.location.href;
-    }
-    name = name.replace(/[\[\]]/g, "\\$&");
-    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
-        results = regex.exec(url);
-    if (!results) return null;
-    if (!results[2]) return '';
-    return decodeURIComponent(results[2].replace(/\+/g, " "));
+	if (!url) {
+		url = window.location.href;
+	}
+	name = name.replace(/[\[\]]/g, "\\$&");
+	var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+	results = regex.exec(url);
+	if (!results) return null;
+	if (!results[2]) return '';
+	return decodeURIComponent(results[2].replace(/\+/g, " "));
 }
 
 // 초기화 함수
@@ -25,50 +25,45 @@ var documentReady = function() {
 	destinationLongitude = getParameterByName('desLng');
 	destinationLatitude = getParameterByName('desLat');
 	directionsService = new olleh.maps.DirectionsService('frKMcOKXS*l9iO5g');
-    var control = olleh.maps.control.Control;
+	var control = olleh.maps.control.Control;
 
-    map = new olleh.maps.Map('map_div', {
-        center : new olleh.maps.LatLng(departureLatitude, departureLongitude),
-        zoom : 7,
-        zoomControl: true,
-        copyrightControl: false,
-        mapTypeControl: false,
-        measureControl: false,
-        scaleControl: false,
-        panControl: false,
-        disablePinchZoom: false,
-        disableMultiTabZoom: false,
-        zoomControlOptions: {
-		    position: control.TOP_RIGHT, 
-		    direction: control.VERTICAL,
-		    top: 130,
-		    right: 20,
-		    style: olleh.maps.control.ZoomControl.SMALL
-  		}
-    });
+	map = new olleh.maps.Map('map_div', {
+		center : new olleh.maps.LatLng(departureLatitude, departureLongitude),
+		zoom : 7,
+		zoomControl: true,
+		copyrightControl: false,
+		mapTypeControl: false,
+		measureControl: false,
+		scaleControl: false,
+		panControl: false,
+		disablePinchZoom: false,
+		disableMultiTabZoom: false,
+		zoomControlOptions: {
+			position: control.TOP_RIGHT, 
+			direction: control.VERTICAL,
+			top: 130,
+			right: 20,
+			style: olleh.maps.control.ZoomControl.SMALL
+		}
+	});
+	
+	let marker;
+	navigator.geolocation.watchPosition(function(position) {
+		if(marker != undefined){
+			marker.erase();
+		}
+		
+		marker = new olleh.maps.overlay.Marker({
+			position: new olleh.maps.LatLng(position.coords.latitude, position.coords.longitude),
+			map: map,
+			icon: {
+				url: '../lib/images/my_location.png'
+			}
+		});
+		marker.setFlat(true);
+	});
 
-    var w;
-    if(typeof(Worker) !== "undefined") {
-        if(typeof(w) == "undefined") {
-            w = new Worker("current_position_worker.js");
-        }
-        w.onmessage = function(event) {
-        	let position = event.data;
-        	console.log(position);
-            let marker = new olleh.maps.overlay.Marker({
-				position: new olleh.maps.LatLng(position.latitude, position.longitude),
-				map: map,
-				// icon: {
-				// 	url: 'http://api.ktgis.com:10080/ollehmap/resource/v3/img/leaf-red.png'
-				// }
-			});
-        };
-    } else {
-        document.getElementById("result").innerHTML = "Sorry, your browser does not support Web Workers...";
-    }
-
-    
-    recommendedRoute();
+	recommendedRoute();
 }
 
 var clearMap = function() {
