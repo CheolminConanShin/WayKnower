@@ -15,8 +15,8 @@ var getParameterByName = function(name, url) {
 
 // 초기화 함수
 var documentReady = function() {
-	let departure = getParameterByName('departure');
-	let destination = getParameterByName('destination');
+	var departure = getParameterByName('departure');
+	var destination = getParameterByName('destination');
 	document.querySelector('#departure').innerHTML = departure;
 	document.querySelector('#destination').innerHTML = destination;
 
@@ -47,7 +47,7 @@ var documentReady = function() {
 		}
 	});
 	
-	let marker;
+	var marker;
 	navigator.geolocation.watchPosition(function(position) {
 		if(marker != undefined){
 			marker.erase();
@@ -67,9 +67,11 @@ var documentReady = function() {
 }
 
 var clearMap = function() {
-	let polylines = document.querySelectorAll('#layer_container svg polyline')
-	for (var polyline of polylines) {
-		polyline.remove();
+	var polylines = document.querySelectorAll('#layer_container svg polyline');
+	if(polylines.length > 0){
+		polylines.forEach(function(polyline) {
+			polyline.remove();
+		});
 	}
 	map.getLayer("Vector")._vectors = [];
 	map.setCenter(new olleh.maps.LatLng(departureLatitude, departureLongitude)); 

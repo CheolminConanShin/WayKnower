@@ -1,11 +1,11 @@
- const SHORTEST_PATH_COLOR = "green";
+const SHORTEST_PATH_COLOR = "green";
 const HIGHWAY_PATH_COLOR = "blue";
 const FREEWAY_PATH_COLOR = "orange";
 const TRAFFIC_PATH_COLOR = "purple";
 const DEFAULT_TAXI_FEE = 3000;
 
-let routeDirectionListBox = document.querySelector("#routeDirectionList");
-let routeDirectionDetails = document.querySelector("#routeDirectionDetails")
+var routeDirectionListBox = document.querySelector("#routeDirectionList");
+var routeDirectionDetails = document.querySelector("#routeDirectionDetails")
 
 const shortest_path_service_callback = function(data) {
 	var directionsResult = directionsService.parseRoute(data);
@@ -123,7 +123,7 @@ var getCallbackString = function(priorityType) {
 	}
 }
 
-let setRouteDirectionDetails = (directionsResult) => {
+var setRouteDirectionDetails = function(directionsResult) {
 	var displayArray = getDestinationRouteArray(directionsResult);
 	var duration = getDuration(directionsResult);
 	var distance = getDistance(directionsResult);
@@ -135,12 +135,15 @@ let setRouteDirectionDetails = (directionsResult) => {
 	routeDirectionDetails.querySelector("#fee").textContent = fee;
 }
 
-let getDestinationRouteArray = function(durationResult) {
+var getDestinationRouteArray = function(durationResult) {
 	var destinationArray = [];
-	for(var route of durationResult.result.routes) {
-		if(route.node_name != "" && route.node_name != undefined) {
-			destinationArray.push(route.node_name);
-		}
+
+	if(durationResult.result.routes.length > 0) {
+		durationResult.result.routes.forEach(function(route) {
+			if(route.node_name != "" && route.node_name != undefined) {
+				destinationArray.push(route.node_name);
+			}
+		});
 	}
 	
 	var uniqueArray = destinationArray.filter(function(item, pos, self) {
@@ -160,19 +163,19 @@ let getDestinationRouteArray = function(durationResult) {
 	return displayArray.toString().replace(/,/gi,"\u00a0\u00a0\u00a0\u00a0>\u00a0\u00a0\u00a0\u00a0");
 }
 
-let getDuration = function(directionsResult) {
+var getDuration = function(directionsResult) {
 	var durationMinutes = directionsResult.result.total_duration.value;
 	var elapsedHours = Math.floor(durationMinutes / 60);
 	var elapsedMinutes = Math.floor((durationMinutes / 60 - elapsedHours) * 60);
 	return "약 " + (elapsedHours > 0 ? elapsedHours + "시간" : "") + (elapsedMinutes > 0 ? elapsedMinutes + "분" : "");
 }
 
-let getDistance = function(directionsResult) {
+var getDistance = function(directionsResult) {
 	var distanceInKm = directionsResult.result.total_distance.value/1000;
 	return "약 " + parseFloat(distanceInKm).toFixed(1) + "km";
 }
 
-let getFee = function(directionsResult) {
+var getFee = function(directionsResult) {
 	var distanceInKm = directionsResult.result.total_distance.value/1000;
 	return "택시비 약 " + (Math.floor(distanceInKm) * 1000 <= DEFAULT_TAXI_FEE ? DEFAULT_TAXI_FEE : Math.floor(distanceInKm) * 1000) + "원";
 }
