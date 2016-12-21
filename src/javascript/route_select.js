@@ -23,8 +23,8 @@ var documentReady = function() {
 
 	var departure = getParameterByName('departure');
 	var destination = getParameterByName('destination');
-	document.querySelector('#departure').innerHTML = departure.substring(4);
-	document.querySelector('#destination').innerHTML = destination.substring(4);
+	document.querySelector('#departure').innerHTML = (departure.indexOf("대한민국") != -1 ? departure.substring(4) : departure);
+	document.querySelector('#destination').innerHTML = (destination.indexOf("대한민국") != -1 ? destination.substring(4) : destination);
 
 	departureLongitude = getParameterByName('depLng');
 	departureLatitude = getParameterByName('depLat');
@@ -52,6 +52,8 @@ var documentReady = function() {
 			style: olleh.maps.control.ZoomControl.SMALL
 		}
 	});
+
+	recommendedRoute();
 	
 	var marker;
 	var options = {
@@ -85,8 +87,7 @@ var documentReady = function() {
 			alert("이탈");
 			window.navigator.vibrate(1000);
 		}
-	},null,options);
-	drawRoutes();
+	}, null, options);
 }
 
 var clearMap = function() {
@@ -100,7 +101,11 @@ var clearMap = function() {
 	map.setCenter(new olleh.maps.LatLng(departureLatitude, departureLongitude)); 
 }
 
-var drawRoutes = function() {
+var recommendedRoute = function() {
+	clearMap();
+	// setRouteDirectionDetails(recommended_direction_result);
+	// boundList = getBoundsArray(recommended_direction_result);
+	// colorSelectedRoute("Recommended");
 	directionsService.route({
 		origin : new olleh.maps.UTMK.valueOf(new olleh.maps.LatLng(departureLatitude, departureLongitude)),
 		destination : new olleh.maps.UTMK.valueOf(new olleh.maps.LatLng(destinationLatitude, destinationLongitude)),
@@ -110,7 +115,12 @@ var drawRoutes = function() {
 	}, 
 	getCallbackString(olleh.maps.DirectionsDrivePriority.PRIORITY_3)
 	); 
-
+}	
+var shortestRoute = function() {
+	clearMap();
+	// setRouteDirectionDetails(shortest_direction_result);
+	// boundList = getBoundsArray(shortest_direction_result);
+	// colorSelectedRoute("Shortest");
 	directionsService.route({
 		origin : new olleh.maps.UTMK.valueOf(new olleh.maps.LatLng(departureLatitude, departureLongitude)),
 		destination : new olleh.maps.UTMK.valueOf(new olleh.maps.LatLng(destinationLatitude, destinationLongitude)),
@@ -120,7 +130,13 @@ var drawRoutes = function() {
 	}, 
 	getCallbackString(olleh.maps.DirectionsDrivePriority.PRIORITY_0)
 	); 
+}
 
+var freeRoute = function() {
+	clearMap();
+	// setRouteDirectionDetails(freeway_direction_result);
+	// boundList = getBoundsArray(freeway_direction_result);
+	// colorSelectedRoute("Freeway");
 	directionsService.route({
 		origin : new olleh.maps.UTMK.valueOf(new olleh.maps.LatLng(departureLatitude, departureLongitude)),
 		destination : new olleh.maps.UTMK.valueOf(new olleh.maps.LatLng(destinationLatitude, destinationLongitude)),
@@ -132,52 +148,35 @@ var drawRoutes = function() {
 	);
 }
 
-var recommendedRoute = function() {
-	setRouteDirectionDetails(recommended_direction_result);
-	boundList = getBoundsArray(recommended_direction_result);
-	colorSelectedRoute("Recommended");
-}	
-var shortestRoute = function() {
-	setRouteDirectionDetails(shortest_direction_result);
-	boundList = getBoundsArray(shortest_direction_result);
-	colorSelectedRoute("Shortest");
-}
+// var colorSelectedRoute = function(routeName) {
+// 	var polylines = document.querySelectorAll('#layer_container svg polyline');
+// 	if(polylines.length > 0){
+// 		var polylineGroup = polylines[0].parentNode;
+// 		var removedPolyline;
 
-var freeRoute = function() {
-	setRouteDirectionDetails(freeway_direction_result);
-	boundList = getBoundsArray(freeway_direction_result);
-	colorSelectedRoute("Freeway");
-}
+// 		var vectors = map.getLayer("Vector")._vectors;
+// 		if(vectors.length > 0) {
+// 			vectors.forEach(function(polyline) {
+// 				if(polyline._eventDom.id == routeName){
+// 					polyline._opts.strokeColor = SELECTED_ROUTE_COLOR;
+// 				}else{
+// 					polyline._opts.strokeColor = UNSELECTED_ROUTE_COLOR;
+// 				}
+// 			});
+// 		}
 
-var colorSelectedRoute = function(routeName) {
-	var polylines = document.querySelectorAll('#layer_container svg polyline');
-	if(polylines.length > 0){
-		var polylineGroup = polylines[0].parentNode;
-		var removedPolyline;
+// 		polylines.forEach(function(polyline) {
+// 			if(polyline.getAttribute("id") == routeName) {
+// 				polyline.setAttribute("stroke", SELECTED_ROUTE_COLOR);
+// 				removedPolyline = polylineGroup.removeChild(polyline);
+// 			} else {
+// 				polyline.setAttribute("stroke", UNSELECTED_ROUTE_COLOR);
+// 			};
+// 		});
 
-		var vectors = map.getLayer("Vector")._vectors;
-		if(vectors.length > 0) {
-			vectors.forEach(function(polyline) {
-				if(polyline._eventDom.id == routeName){
-					polyline._opts.strokeColor = SELECTED_ROUTE_COLOR;
-				}else{
-					polyline._opts.strokeColor = UNSELECTED_ROUTE_COLOR;
-				}
-			});
-		}
-
-		polylines.forEach(function(polyline) {
-			if(polyline.getAttribute("id") == routeName) {
-				polyline.setAttribute("stroke", SELECTED_ROUTE_COLOR);
-				removedPolyline = polylineGroup.removeChild(polyline);
-			} else {
-				polyline.setAttribute("stroke", UNSELECTED_ROUTE_COLOR);
-			};
-		});
-
-		polylineGroup.appendChild(removedPolyline);
-	}
-}
+// 		polylineGroup.appendChild(removedPolyline);
+// 	}
+// }
 
 var getBoundsArray = function(routeList) {
 	var routesArray = routeList.result.routes;

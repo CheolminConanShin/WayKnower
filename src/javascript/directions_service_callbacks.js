@@ -1,6 +1,6 @@
-const SHORTEST_PATH_COLOR = "green";
-const RECOMMENDED_PATH_COLOR = "blue";
-const FREEWAY_PATH_COLOR = "orange";
+const SHORTEST_PATH_COLOR = "#01afaf";
+const RECOMMENDED_PATH_COLOR = "#01afaf";
+const FREEWAY_PATH_COLOR = "#01afaf";
 const TRAFFIC_PATH_COLOR = "purple";
 
 const SELECTED_ROUTE_COLOR = "#01afaf";
@@ -35,28 +35,30 @@ const shortest_path_service_callback = function(data) {
 	}; 
 	var directionsRenderer = new olleh.maps.DirectionsRenderer(directionsRendererOptions);
 
+	setRouteDirectionDetails(shortest_direction_result);
 	directionsRenderer.setMap(map);
 
-	var polylines = document.querySelectorAll('#layer_container svg polyline');
-	if(polylines.length > 0){
-		polylines.forEach(function(polyline) {
-			if(polyline.getAttribute("stroke") == SHORTEST_PATH_COLOR) {
-				polyline.setAttribute("id", "Shortest");
-				polyline.setAttribute("stroke", UNSELECTED_ROUTE_COLOR);
-			}
-		});
-	}
+	boundList = getBoundsArray(shortest_direction_result);
+	// var polylines = document.querySelectorAll('#layer_container svg polyline');
+	// if(polylines.length > 0){
+	// 	polylines.forEach(function(polyline) {
+	// 		if(polyline.getAttribute("stroke") == SHORTEST_PATH_COLOR) {
+	// 			polyline.setAttribute("id", "Shortest");
+	// 			polyline.setAttribute("stroke", UNSELECTED_ROUTE_COLOR);
+	// 		}
+	// 	});
+	// }
 
-	var vectors = map.getLayer("Vector")._vectors;
-	if(vectors.length > 0) {
-		vectors.forEach(function(polyline) {
-			if(polyline._eventDom.id == "Recommended"){
-				polyline._opts.strokeColor = SELECTED_ROUTE_COLOR;
-			}else{
-				polyline._opts.strokeColor = UNSELECTED_ROUTE_COLOR;
-			}
-		});
-	}
+	// var vectors = map.getLayer("Vector")._vectors;
+	// if(vectors.length > 0) {
+	// 	vectors.forEach(function(polyline) {
+	// 		if(polyline._eventDom.id == "Recommended"){
+	// 			polyline._opts.strokeColor = SELECTED_ROUTE_COLOR;
+	// 		}else{
+	// 			polyline._opts.strokeColor = UNSELECTED_ROUTE_COLOR;
+	// 		}
+	// 	});
+	// }
 }
 
 const recommended_path_service_callback = function(data) {
@@ -83,29 +85,29 @@ const recommended_path_service_callback = function(data) {
 	setRouteDirectionDetails(recommended_direction_result);
 	directionsRenderer.setMap(map);
 
-	var polylines = document.querySelectorAll('#layer_container svg polyline');
-	if(polylines.length > 0){
-		polylines.forEach(function(polyline) {
-			if(polyline.getAttribute("stroke") == RECOMMENDED_PATH_COLOR) {
-				polyline.setAttribute("id", "Recommended");
-				polyline.setAttribute("stroke", SELECTED_ROUTE_COLOR);
-			}
-		});
-	}
+	boundList = getBoundsArray(recommended_direction_result);
+	// var polylines = document.querySelectorAll('#layer_container svg polyline');
+	// if(polylines.length > 0){
+	// 	polylines.forEach(function(polyline) {
+	// 		if(polyline.getAttribute("stroke") == RECOMMENDED_PATH_COLOR) {
+	// 			polyline.setAttribute("id", "Recommended");
+	// 			polyline.setAttribute("stroke", SELECTED_ROUTE_COLOR);
+	// 		}
+	// 	});
+	// }
 
-	var vectors = map.getLayer("Vector")._vectors;
-	if(vectors.length > 0) {
-		vectors.forEach(function(polyline) {
-			if(polyline._eventDom.id == "Recommended"){
-				polyline._opts.strokeColor = SELECTED_ROUTE_COLOR;
-			}else{
-				polyline._opts.strokeColor = UNSELECTED_ROUTE_COLOR;
-			}
-		});
-	}
+	// var vectors = map.getLayer("Vector")._vectors;
+	// if(vectors.length > 0) {
+	// 	vectors.forEach(function(polyline) {
+	// 		if(polyline._eventDom.id == "Recommended"){
+	// 			polyline._opts.strokeColor = SELECTED_ROUTE_COLOR;
+	// 		}else{
+	// 			polyline._opts.strokeColor = UNSELECTED_ROUTE_COLOR;
+	// 		}
+	// 	});
+	// }
 
 	// colorSelectedRoute("Recommended");
-	recommendedRoute();
 }
 
 const freeway_path_service_callback = function(data) {
@@ -129,30 +131,30 @@ const freeway_path_service_callback = function(data) {
 	}; 
 	var directionsRenderer = new olleh.maps.DirectionsRenderer(directionsRendererOptions);
 
-	// setRouteDirectionDetails(freeway_direction_result);
+	setRouteDirectionDetails(freeway_direction_result);
 	directionsRenderer.setMap(map);
 
-	var polylines = document.querySelectorAll('#layer_container svg polyline');
-	if(polylines.length > 0){
-		polylines.forEach(function(polyline) {
-			if(polyline.getAttribute("stroke") == FREEWAY_PATH_COLOR) {
-				polyline.setAttribute("id", "Freeway");
-				polyline.setAttribute("stroke", UNSELECTED_ROUTE_COLOR);
-			}
-		});
-	}
+	boundList = getBoundsArray(freeway_direction_result);
+	// var polylines = document.querySelectorAll('#layer_container svg polyline');
+	// if(polylines.length > 0){
+	// 	polylines.forEach(function(polyline) {
+	// 		if(polyline.getAttribute("stroke") == FREEWAY_PATH_COLOR) {
+	// 			polyline.setAttribute("id", "Freeway");
+	// 			polyline.setAttribute("stroke", UNSELECTED_ROUTE_COLOR);
+	// 		}
+	// 	});
+	// }
 
-	var vectors = map.getLayer("Vector")._vectors;
-	if(vectors.length > 0) {
-		vectors.forEach(function(polyline) {
-			if(polyline._eventDom.id == "Recommended"){
-				polyline._opts.strokeColor = SELECTED_ROUTE_COLOR;
-			}else{
-				polyline._opts.strokeColor = UNSELECTED_ROUTE_COLOR;
-			}
-		});
-	}
-
+	// var vectors = map.getLayer("Vector")._vectors;
+	// if(vectors.length > 0) {
+	// 	vectors.forEach(function(polyline) {
+	// 		if(polyline._eventDom.id == "Recommended"){
+	// 			polyline._opts.strokeColor = SELECTED_ROUTE_COLOR;
+	// 		}else{
+	// 			polyline._opts.strokeColor = UNSELECTED_ROUTE_COLOR;
+	// 		}
+	// 	});
+	// }
 }
 
 var getCallbackString = function(priorityType) {
