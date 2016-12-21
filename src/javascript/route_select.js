@@ -1,6 +1,7 @@
 var map, directionsService;
 var priorityType;
 var departureLongitude, departureLatitude, destinationLatitude, destinationLongitude;
+var boundList = [];
 var getParameterByName = function(name, url) {
 	if (!url) {
 		url = window.location.href;
@@ -57,9 +58,20 @@ var documentReady = function() {
 		if(marker != undefined){
 			marker.erase();
 		}
-		
+		var currentPosition = new olleh.maps.LatLng(position.coords.latitude, position.coords.longitude);
+		var boundCheckFlag = false;
+		boundList.forEach(function(bound) {
+			if(bound.contains(olleh.maps.UTMK.valueOf(currentPosition))) {
+				boundCheckFlag = true;
+			}
+		})
+		if(boundCheckFlag) {
+			window.navigator.vibrate(2000);
+		}else{
+			window.navigator.vibrate(2000);
+		}
 		marker = new olleh.maps.overlay.Marker({
-			position: new olleh.maps.LatLng(position.coords.latitude, position.coords.longitude),
+			position: currentPosition,
 			map: map,
 			icon: {
 				url: '../lib/images/my_location.png'
@@ -116,15 +128,18 @@ var drawRoutes = function() {
 
 var recommendedRoute = function() {
 	setRouteDirectionDetails(recommended_direction_result);
+	boundList = getBoundsArray(recommended_direction_result);
 	colorSelectedRoute("Recommended");
 }	
 var shortestRoute = function() {
 	setRouteDirectionDetails(shortest_direction_result);
+	boundList = getBoundsArray(shortest_direction_result);
 	colorSelectedRoute("Shortest");
 }
 
 var freeRoute = function() {
 	setRouteDirectionDetails(freeway_direction_result);
+	boundList = getBoundsArray(freeway_direction_result);
 	colorSelectedRoute("Freeway");
 }
 
@@ -156,4 +171,33 @@ var colorSelectedRoute = function(routeName) {
 
 		polylineGroup.appendChild(removedPolyline);
 	}
+}
+
+var getBoundsArray = function(routeList) {
+	var routesArray = routeList.result.routes;
+	var boundsArray = [];
+
+	for(var cnt=0; cnt < routesArray.length-1; cnt++) {
+		var fitstPointX = routesArray[cnt].point.x;
+		var fitstPointY = routesArray[cnt].point.y;
+		var secondPointX = routesArray[cnt+1].point.x;
+		var secondPointY = routesArray[cnt+1].point.y;
+		var lessX, moreX, lessY, moreY;
+
+		if(fitstPointX <= secondPointX) {
+			lessX = fitstPointX;
+		} else {
+			moreX = secondPointX;
+		}
+
+		if(fitstPointY <= secondPointY) {
+			lessY = fitstPointY;
+		} else {
+			moreY = secondPointY;
+		}
+		var leftBottom = new olleh.maps.UTMK(lessX, lessY);
+		var rightTop = new olleh.maps.UTMK(moreX, moreY);
+		boundsArray.push(new olleh.maps.Bounds(leftBottom, rightTop));
+	}
+	return boundsArray;
 }

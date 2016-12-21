@@ -8,6 +8,7 @@ const UNSELECTED_ROUTE_COLOR = "#9b9b9b";
 
 const DEFAULT_TAXI_FEE = 3000;
 
+
 var shortest_direction_result, recommended_direction_result, freeway_direction_result;
 
 var routeDirectionListBox = document.querySelector("#routeDirectionList");
@@ -103,7 +104,8 @@ const recommended_path_service_callback = function(data) {
 		});
 	}
 
-	colorSelectedRoute("Recommended");
+	// colorSelectedRoute("Recommended");
+	recommendedRoute();
 }
 
 const freeway_path_service_callback = function(data) {
