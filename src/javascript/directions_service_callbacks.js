@@ -169,7 +169,7 @@ let getDuration = function(directionsResult) {
 
 let getDistance = function(directionsResult) {
 	var distanceInKm = directionsResult.result.total_distance.value/1000;
-	return "약 " + parseFloat(distanceInKm).toFixed(2) + "km";
+	return "약 " + parseFloat(distanceInKm).toFixed(1) + "km";
 }
 
 let getFee = function(directionsResult) {
