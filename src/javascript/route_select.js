@@ -56,6 +56,7 @@ var clearMap = function() {
 		polyline.remove();
 	}
 	map.getLayer("Vector")._vectors = [];
+	map.setCenter(new olleh.maps.LatLng(departureLatitude, departureLongitude)); 
 }
 
 var recommendedRoute = function() {
