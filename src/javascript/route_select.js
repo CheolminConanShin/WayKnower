@@ -47,6 +47,27 @@ var documentReady = function() {
   		}
     });
 
+    var w;
+    if(typeof(Worker) !== "undefined") {
+        if(typeof(w) == "undefined") {
+            w = new Worker("current_position_worker.js");
+        }
+        w.onmessage = function(event) {
+        	let position = event.data;
+        	console.log(position);
+            let marker = new olleh.maps.overlay.Marker({
+				position: new olleh.maps.LatLng(position.latitude, position.longitude),
+				map: map,
+				// icon: {
+				// 	url: 'http://api.ktgis.com:10080/ollehmap/resource/v3/img/leaf-red.png'
+				// }
+			});
+        };
+    } else {
+        document.getElementById("result").innerHTML = "Sorry, your browser does not support Web Workers...";
+    }
+
+    
     recommendedRoute();
 }
 
@@ -95,3 +116,4 @@ var freeRoute = function() {
 	getCallbackString(olleh.maps.DirectionsDrivePriority.PRIORITY_2)
 	); 
 }
+
