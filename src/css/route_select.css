@@ -19,6 +19,7 @@ nav, .nav-wrapper {
 
 nav .brand-logo {
     font-size: 4vh;
+    left: 14vw !important;
 }
 
 .location-field {
@@ -146,7 +147,11 @@ nav .brand-logo {
     border-radius: 4px;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
-
+.arrow-back {
+    content:url("../lib/images/arrow_back.png");
+    height: 2.74vh;
+    margin-left: 4vw;
+}
 .division {
     content:url("../lib/images/division.png");
     height: 10px;

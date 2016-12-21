@@ -12,16 +12,16 @@ var documentReady = function() {
 	var departureInput = document.querySelectorAll(".line-size input")[0];
 	var destinationInput = document.querySelectorAll(".line-size input")[1];
 
-	document.getElementById('search-button').addEventListener('click', e => {
+	document.getElementById('search-button').addEventListener('click', function(){
 		var departureLatitude = departureInput.getAttribute("lat");
 		var departureLongitude =departureInput.getAttribute("lng");
 		var destinationLatitude = destinationInput.getAttribute("lat");
 		var destinationLongitude = destinationInput.getAttribute("lng");
 
-		location.href = "html/route_select.html?"
+		location.replace("/html/route_select.html?"
 		+ "departure="+ departureInput.value + "&destination=" + destinationInput.value
 		+ "&depLat=" + departureLatitude + "&depLng=" + departureLongitude
-		+ "&desLat=" + destinationLatitude + "&desLng=" + destinationLongitude;
+		+ "&desLat=" + destinationLatitude + "&desLng=" + destinationLongitude);
 	});
 }
 

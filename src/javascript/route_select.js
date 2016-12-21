@@ -15,6 +15,11 @@ var getParameterByName = function(name, url) {
 
 // 초기화 함수
 var documentReady = function() {
+	var backButton = document.querySelector(".arrow-back");
+	backButton.addEventListener("click", function(e) {
+		location.replace("/");
+	});
+
 	var departure = getParameterByName('departure');
 	var destination = getParameterByName('destination');
 	document.querySelector('#departure').innerHTML = departure;
