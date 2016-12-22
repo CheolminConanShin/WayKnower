@@ -24,7 +24,20 @@ goThisWayButton.addEventListener("click", function(e) {
 });
 
 shareButton.addEventListener("click", function(e) {
-
+	Kakao.init('3b1c9bd1870f46083d79ba8115f7f304');
+	// 카카오톡 링크 버튼을 생성합니다. 처음 한번만 호출하면 됩니다.
+	Kakao.Link.createTalkLinkButton({
+		horizontalButton: [{
+			webButton: {
+				text: '카카오 디벨로퍼스',
+				url: 'https://dev.kakao.com/docs/js'
+			}
+		}, {
+			appButton: {
+				text: '앱으로 이동'
+			}
+		}]
+	});
 });
 
 var departure = getParameterByName('departure');
