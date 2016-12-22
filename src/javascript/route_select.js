@@ -29,16 +29,26 @@ function activateKakao(){
 	// 카카오톡 링크 버튼을 생성합니다. 처음 한번만 호출하면 됩니다.
 	Kakao.Link.createTalkLinkButton({
 		container: '#kakao-link-btn',
+		label: '카카오링크 샘플에 오신 것을 환영합니다.',
+		image: {
+			src: 'http://dn.api1.kage.kakao.co.kr/14/dn/btqaWmFftyx/tBbQPH764Maw2R6IBhXd6K/o.jpg',
+			width: '300',
+			height: '200'
+		},
 		horizontalButton: [{
 			webButton: {
-				text: '',
+				text: '카카오 디벨로퍼스',
 				url: 'https://dev.kakao.com/docs/js'
 			}
 		}, {
 			appButton: {
 				text: '앱으로 이동'
 			}
-		}]
+		}],
+		extras:{
+			executeurl: {android: "kakaotalk://store", ios: "aaabbbccc://"},
+			marketurl: {android: "http://m.tstore.co.kr/mobilepoc/apps/appsDetail.omp?prodId=0000692767&PrePageNm=/app", ios: "e"}
+		}
 	});
 };
 
