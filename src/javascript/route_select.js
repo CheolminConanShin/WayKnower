@@ -6,6 +6,7 @@ var boundList = [];
 const backButton = document.querySelector(".arrow-back");
 const goThisWayButton = document.querySelector(".go-this-way-button");
 const shareButton = document.querySelector(".share-button");
+const modalDialog = $(".modal");
 
 // 초기화 함수
 backButton.addEventListener("click", function(e) {
@@ -18,6 +19,8 @@ goThisWayButton.addEventListener("click", function(e) {
 		component.className += " disappear";
 	});
 	shareButton.className = shareButton.className.replace(" disappear", "");
+
+	setGeolocation();
 });
 
 shareButton.addEventListener("click", function(e) {
@@ -59,6 +62,7 @@ map = new olleh.maps.Map('map_div', {
 recommendedRoute();
 departureToDestinationMarker();
 
+modalDialog.modal();
 
 function getParameterByName(name, url) {
 	if (!url) {
@@ -217,8 +221,10 @@ function setGeolocation() {
 		});
 		marker.setFlat(true);
 		if(!boundCheckFlag) {
-			alert("이탈");
+			modalDialog.modal('open');
 			window.navigator.vibrate(1000);
+		}else{
+			console.log("질 가고 있구만!");
 		}
 	}, null, options);
 }
