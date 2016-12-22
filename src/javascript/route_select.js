@@ -34,16 +34,10 @@ function activateKakao(){
 			width: '300',
 			height: '200'
 		},
-		horizontalButton: [{
-			webButton: {
-				text: '카카오 디벨로퍼스',
-				url: 'http://www.naver.com'
-			}
-		}, {
-			appButton: {
-				text: '앱으로 이동'
-			}
-		}]
+		webButton: {
+			text: '카카오 디벨로퍼스',
+			url: 'http://www.naver.com'
+		}
 	});
 };
 
