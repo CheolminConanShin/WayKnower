@@ -37,11 +37,7 @@ function activateKakao(){
 			appButton: {
 				text: '앱으로 이동'
 			}
-		}],
-		extras:{
-			executeurl: {android: "kakaotalk://store", ios: "aaabbbccc://"},
-			marketurl: {android: "http://m.tstore.co.kr/mobilepoc/apps/appsDetail.omp?prodId=0000692767&PrePageNm=/app", ios: "e"}
-		}
+		}]
 	});
 };
 
