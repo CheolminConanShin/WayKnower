@@ -5,10 +5,23 @@ var boundList = [];
 
 const backButton = document.querySelector(".arrow-back");
 const goThisWayButton = document.querySelector(".go-this-way-button");
+const shareButton = document.querySelector(".share-button");
 
 // 초기화 함수
 backButton.addEventListener("click", function(e) {
 	location.replace("/");
+});
+
+goThisWayButton.addEventListener("click", function(e) {
+	var disappearComponents = document.querySelectorAll(".go-away");
+	disappearComponents.forEach(function(component) {
+		component.className += " disappear";
+	});
+	shareButton.className = shareButton.className.replace(" disappear", "");
+});
+
+shareButton.addEventListener("click", function(e) {
+
 });
 
 var departure = getParameterByName('departure');

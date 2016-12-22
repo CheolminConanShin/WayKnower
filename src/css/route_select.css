@@ -88,7 +88,7 @@ nav .brand-logo {
 }
 
 .map-field, #map_div {
-    height: 74vh;
+    height: 85vh;
 }
 
 #routeInfoBox {
@@ -134,6 +134,18 @@ nav .brand-logo {
     float: left;
 }
 
+.share-button {
+    position: fixed;
+    z-index: 1;
+    top: 15vh;
+    right: 6vw;
+}
+
+.share-button img {
+    width: 40px;
+    height: 40px;
+}
+
 .go-this-way-button {
     background: rgba(1, 175, 175, 0.7);
     color: white;
@@ -158,4 +170,8 @@ nav .brand-logo {
     width: 1px;
     margin-left: 9px;
     margin-right: 9px;
+}
+
+.disappear {
+    display: none;
 }

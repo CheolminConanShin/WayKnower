@@ -29,7 +29,7 @@
     <table class="route-field centered">
         <tbody>
             <tr>
-                <td class="button-field route-tab">
+                <td class="go-away button-field route-tab">
                     <ul class="tabs tabs-transparent route-tab">
                         <li class="tab route-tab"><a id="recommendedRouteBtn" class="active" onclick="recommendedRoute()">최적</a>/li>
                         <li class="tab route-tab"><a id="shortestRouteBtn" onclick="shortestRoute()">최단</a>/li>
@@ -39,14 +39,15 @@
             </tr>
             <tr>
                 <td class="map-field">
-                    <div id="routeInfoBox">
+                    <div class="share-button disappear"><img src="../lib/images/group.png"></div>
+                    <div class="go-away" id="routeInfoBox">
                         <div id="routeDirectionList" class="left-align"></div>
                         <div id="routeDirectionDetails" class="left-align valign-wrapper">
                             <div id="duration"></div><img class="division"><div id="distance"></div><img class="division"><div id="fee"></div>
                         </div>
                     </div>
-                    <div id="map_div" class="ollehmap ollehmap-event" data-id="ollehmap1481594207993" style="cursor: default;"></div>
-                    <div class="go-this-way-button">이 길로 가주세요</div>
+                    <div id="map_div" class="ollehmap ollehmap-event" data-id="ollehmap1481594207993" style="cursor: default; height: 100%"></div>
+                    <div class="go-this-way-button go-away">이 길로 가주세요</div>
                 </td>
             </tr>
         </tbody>
