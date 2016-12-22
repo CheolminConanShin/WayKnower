@@ -28,14 +28,14 @@ function activateKakao(){
 	// 카카오톡 링크 버튼을 생성합니다. 처음 한번만 호출하면 됩니다.
 	Kakao.Link.createTalkLinkButton({
 		container: '#kakao-link-btn',
-		label: '카카오링크 샘플에 오신 것을 환영합니다.',
+		label: '지인의 위치를 확인해주세요!',
 		image: {
-			src: 'http://dn.api1.kage.kakao.co.kr/14/dn/btqaWmFftyx/tBbQPH764Maw2R6IBhXd6K/o.jpg',
+			src: '../lib/images/share_link.JPEG',
 			width: '300',
 			height: '200'
 		},
 		webButton: {
-			text: '카카오 디벨로퍼스',
+			text: '확인하러가기',
 			url: 'http://www.naver.com'
 		}
 	});
@@ -242,7 +242,7 @@ function setGeolocation() {
 			modalDialog.modal('open');
 			window.navigator.vibrate(1000);
 		}else{
-			console.log("질 가고 있구만!");
+			console.log("잘가고 있구만!");
 		}
 	}, null, options);
 }
