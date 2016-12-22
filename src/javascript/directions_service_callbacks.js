@@ -66,6 +66,7 @@ function recommended_path_service_callback(data) {
 	directionsRenderer.setMap(map);
 
 	boundList = getBoundsArray(recommended_direction_result);
+	departureToDestinationMarker();
 }
 
 function freeway_path_service_callback(data) {

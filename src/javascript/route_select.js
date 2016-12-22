@@ -60,7 +60,6 @@ map = new olleh.maps.Map('map_div', {
 });
 
 recommendedRoute();
-departureToDestinationMarker();
 
 modalDialog.modal();
 
@@ -162,13 +161,14 @@ function getBoundsArray(routeList) {
 function departureToDestinationMarker() {
 	var departureIcon = {
 			url: '../lib/images/start.png',
-			size: new olleh.maps.Size(100, 100),
-			anchor: new olleh.maps.Point(10, 30)
+			size: new olleh.maps.Size(50, 50),
+			anchor: new olleh.maps.Point(27, 22)
 		};
 	
-
+	var departureUTMK_x = recommended_direction_result.result.links[0].x;
+	var departureUTMK_y = recommended_direction_result.result.links[0].y;
 	var departureMarker = new olleh.maps.overlay.Marker({
-			position: new olleh.maps.LatLng(departureLatitude, departureLongitude),
+			position: new olleh.maps.UTMK(departureUTMK_x, departureUTMK_y),
 			map: map,
 			icon: {
 				url: '../lib/images/start.png'
@@ -179,11 +179,15 @@ function departureToDestinationMarker() {
 
 	var destinationIcon = {
 			url: '../lib/images/pin.png',
-			size: new olleh.maps.Size(100, 100), 
-			anchor: new olleh.maps.Point(10, 30)
+			size: new olleh.maps.Size(50, 50),
+			anchor: new olleh.maps.Point(27, 22)
 		};
+
+	var lastIndexOfArray = recommended_direction_result.result.links.length-1;
+	var destinationUTMK_x = recommended_direction_result.result.links[lastIndexOfArray].x;
+	var destinationUTMK_y = recommended_direction_result.result.links[lastIndexOfArray].y;
 	var destinationMarker = new olleh.maps.overlay.Marker({
-			position: new olleh.maps.LatLng(destinationLatitude, destinationLongitude),
+			position: new olleh.maps.UTMK(destinationUTMK_x, destinationUTMK_y),
 			map: map,
 			icon: {
 				url: '../lib/images/pin.png'
