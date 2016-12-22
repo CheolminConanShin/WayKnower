@@ -23,13 +23,15 @@ goThisWayButton.addEventListener("click", function(e) {
 	setGeolocation();
 });
 
-shareButton.addEventListener("click", function(e) {
+function activateKakao(){
+	alert("hell");
 	Kakao.init('3b1c9bd1870f46083d79ba8115f7f304');
 	// 카카오톡 링크 버튼을 생성합니다. 처음 한번만 호출하면 됩니다.
 	Kakao.Link.createTalkLinkButton({
+		container: '#kakao-link-btn',
 		horizontalButton: [{
 			webButton: {
-				text: '카카오 디벨로퍼스',
+				text: '',
 				url: 'https://dev.kakao.com/docs/js'
 			}
 		}, {
@@ -38,7 +40,7 @@ shareButton.addEventListener("click", function(e) {
 			}
 		}]
 	});
-});
+};
 
 var departure = getParameterByName('departure');
 var destination = getParameterByName('destination');
