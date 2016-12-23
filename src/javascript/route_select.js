@@ -38,7 +38,7 @@ function activateKakao(){
 		container: '#kakao-link-btn',
 		label: '지인의 위치를 확인해주세요!',
 		image: {
-			src: '../lib/images/share_link.png',
+			src: '../lib/images/share_link.jpeg',
 			width: '300',
 			height: '200'
 		},
