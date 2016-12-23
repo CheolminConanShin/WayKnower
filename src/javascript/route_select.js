@@ -2,6 +2,8 @@ var map, directionsService;
 var priorityType;
 var departureLongitude, departureLatitude, destinationLatitude, destinationLongitude;
 var boundList = [];
+var dbKey;
+var marker;
 
 const backButton = document.querySelector(".arrow-back");
 const goThisWayButton = document.querySelector(".go-this-way-button");
@@ -20,7 +22,13 @@ goThisWayButton.addEventListener("click", function(e) {
 	});
 	shareButton.className = shareButton.className.replace(" disappear", "");
 
-	setGeolocation();
+	if(getParameterByName("key") == null){
+		setGeolocation();
+	}
+
+	connectDatabase();
+	dbKey = generateDatabaseKey();
+	receiveCoordinatesByKey(dbKey);
 });
 
 function activateKakao(){
@@ -30,13 +38,13 @@ function activateKakao(){
 		container: '#kakao-link-btn',
 		label: '지인의 위치를 확인해주세요!',
 		image: {
-			src: '../lib/images/share_link.JPEG',
+			src: '../lib/images/my_location.png',
 			width: '300',
 			height: '200'
 		},
 		webButton: {
 			text: '확인하러가기',
-			url: 'http://www.naver.com'
+			url: window.location.href + '&key=' + dbKey
 		}
 	});
 };
@@ -76,6 +84,11 @@ map = new olleh.maps.Map('map_div', {
 recommendedRoute();
 
 modalDialog.modal();
+
+if(getParameterByName("key") != null) {
+	dbKey = getParameterByName("key");
+	goThisWayButton.click();
+}
 
 function getParameterByName(name, url) {
 	if (!url) {
@@ -212,7 +225,6 @@ function departureToDestinationMarker() {
 }
 
 function setGeolocation() {
-	var marker;
 	var options = {
 		enableHighAccuracy: false,
 		timeout: 3000,
@@ -220,9 +232,7 @@ function setGeolocation() {
 	};
 
 	navigator.geolocation.watchPosition(function(position) {
-		if(marker != undefined){
-			marker.erase();
-		}
+
 		var currentPosition = new olleh.maps.LatLng(position.coords.latitude, position.coords.longitude);
 		var boundCheckFlag = false;
 		boundList.forEach(function(bound) {
@@ -230,14 +240,9 @@ function setGeolocation() {
 				boundCheckFlag = true;
 			}
 		});
-		marker = new olleh.maps.overlay.Marker({
-			position: currentPosition,
-			map: map,
-			icon: {
-				url: '../lib/images/my_location.png'
-			}
-		});
-		marker.setFlat(true);
+
+		updateCoordinatesByKey(position.coords.latitude, position.coords.longitude, dbKey);
+
 		if(!boundCheckFlag) {
 			modalDialog.modal('open');
 			window.navigator.vibrate(1000);
@@ -245,4 +250,28 @@ function setGeolocation() {
 			console.log("잘가고 있구만!");
 		}
 	}, null, options);
+}
+
+function receiveCoordinatesByKey(key){
+	let firebaseRef = firebaseDB.ref(key);
+
+	firebaseRef.on('value', function(snapshot) {
+		if(snapshot.val() == null){
+			return;
+		}
+
+		if(marker != undefined){
+			marker.erase();
+		}
+		const coordinates = snapshot.val();
+		var position = new olleh.maps.LatLng(coordinates.latitude, coordinates.longitude);
+		marker = new olleh.maps.overlay.Marker({
+			position: position,
+			map: map,
+			icon: {
+				url: '../lib/images/my_location.png'
+			}
+		});
+		marker.setFlat(true);
+	});
 }
