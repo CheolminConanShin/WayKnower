@@ -4,11 +4,14 @@ var departureLongitude, departureLatitude, destinationLatitude, destinationLongi
 var boundList = [];
 var dbKey;
 var marker;
+var taxiCallingModal, taxiCalledModal;
 
 const backButton = document.querySelector(".arrow-back");
 const goThisWayButton = document.querySelector(".go-this-way-button");
 const shareButton = document.querySelector(".share-button");
-const modalDialog = $(".modal");
+const modalDialog = $("#modalDialog");
+const modalCallingDialog = $("#modalCallingDialog");
+const modalCalledDialog = $("#modalCalledDialog");
 
 // 초기화 함수
 backButton.addEventListener("click", function(e) {
@@ -16,6 +19,9 @@ backButton.addEventListener("click", function(e) {
 });
 
 goThisWayButton.addEventListener("click", function(e) {
+	callingTaxiMockModal();
+	calledTaxiMockModal();
+
 	var disappearComponents = document.querySelectorAll(".go-away");
 	disappearComponents.forEach(function(component) {
 		component.className += " disappear";
@@ -29,7 +35,21 @@ goThisWayButton.addEventListener("click", function(e) {
 	connectDatabase();
 	dbKey = generateDatabaseKey();
 	receiveCoordinatesByKey(dbKey);
+	
 });
+
+function callingTaxiMockModal() {
+	modalCallingDialog.modal('open');
+	goThisWayButton.innerHTML = "호출 취소";
+};
+
+function calledTaxiMockModal() {
+	setTimeout(function(){
+		modalCallingDialog.modal('close');
+		modalCalledDialog.modal('open');
+	}, 	2000);
+	modalCalledDialog.modal('close');
+};
 
 function activateKakao(){
 	Kakao.init('3b1c9bd1870f46083d79ba8115f7f304');
@@ -86,6 +106,8 @@ map = new olleh.maps.Map('map_div', {
 recommendedRoute();
 
 modalDialog.modal();
+modalCallingDialog.modal();
+modalCalledDialog.modal();
 
 if(getParameterByName("key") != null) {
 	dbKey = getParameterByName("key");

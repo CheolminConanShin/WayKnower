@@ -208,3 +208,15 @@ nav .brand-logo {
 .modal-overlay {
     background: rgba(0,0,0,0.4);
 }
+
+#modalCallingDialog {
+    color: #50e3c2;
+    font-size: 3vh;
+    top: 39% !important;
+}
+
+#modalCallingDialog {
+    color: #50e3c2;
+    font-size: 3vh;
+    top: 50% !important;
+}
