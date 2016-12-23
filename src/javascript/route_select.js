@@ -44,7 +44,8 @@ function activateKakao(){
 		},
 		webButton: {
 			text: '확인하러가기',
-			url: window.location.href + '&key=' + dbKey
+			//url: window.location.href + '&key=' + dbKey
+			url: 'www.naver.com'
 		}
 	});
 };
