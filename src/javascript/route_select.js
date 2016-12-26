@@ -1,90 +1,23 @@
-var map, directionsService;
 var priorityType;
-var departureLongitude, departureLatitude, destinationLatitude, destinationLongitude;
 var boundList = [];
-var dbKey;
-var marker;
+var dbKey, marker;
 var taxiCallingModal, taxiCalledModal;
+var directionsService = new olleh.maps.DirectionsService('frKMcOKXS*l9iO5g');
 
-const backButton = document.querySelector(".arrow-back");
 const goThisWayButton = document.querySelector(".go-this-way-button");
 const shareButton = document.querySelector(".share-button");
-const modalDialog = $("#modalDialog");
-const modalCallingDialog = $("#modalCallingDialog");
-const modalCalledDialog = $("#modalCalledDialog");
+var modalDialog = $("#modalDialog");
+var modalCallingDialog = $("#modalCallingDialog");
+var modalCalledDialog = $("#modalCalledDialog");
+var departure = {name: getParameterByName('departure'), longitude: getParameterByName('depLng'), latitude: getParameterByName('depLat')};
+var destination = {name: getParameterByName('destination'), longitude: getParameterByName('desLng'), latitude: getParameterByName('desLat')};
 
-// 초기화 함수
-backButton.addEventListener("click", function(e) {
-	location.replace("/");
-});
+document.querySelector('#departure').innerHTML = (departure.name.indexOf("대한민국") != -1 ? departure.name.substring(4) : departure.name);
+document.querySelector('#destination').innerHTML = (destination.name.indexOf("대한민국") != -1 ? destination.name.substring(4) : destination.name);
 
-goThisWayButton.addEventListener("click", function(e) {
-	callingTaxiMockModal();
-	calledTaxiMockModal();
-
-	var disappearComponents = document.querySelectorAll(".go-away");
-	disappearComponents.forEach(function(component) {
-		component.className += " disappear";
-	});
-	shareButton.className = shareButton.className.replace(" disappear", "");
-
-	if(getParameterByName("key") == null){
-		setGeolocation();
-	}
-
-	connectDatabase();
-	dbKey = generateDatabaseKey();
-	receiveCoordinatesByKey(dbKey);
-	
-});
-
-function callingTaxiMockModal() {
-	modalCallingDialog.modal('open');
-	goThisWayButton.innerHTML = "호출 취소";
-};
-
-function calledTaxiMockModal() {
-	setTimeout(function(){
-		modalCallingDialog.modal('close');
-		modalCalledDialog.modal('open');
-	}, 	2000);
-	modalCalledDialog.modal('close');
-};
-
-function activateKakao(){
-	Kakao.init('3b1c9bd1870f46083d79ba8115f7f304');
-	// 카카오톡 링크 버튼을 생성합니다. 처음 한번만 호출하면 됩니다.
-	Kakao.Link.createTalkLinkButton({
-		container: '#kakao-link-btn',
-		label: '지인의 위치를 확인해주세요!',
-		image: {
-			//src: '../lib/images/share_link.jpeg',
-			src: 'https://wayknower.firebaseapp.com/lib/images/share_link.jpeg',
-			width: '300',
-			height: '200'
-		},
-		webButton: {
-			text: '확인하러가기',
-			//url: window.location.href + '&key=' + dbKey
-			url: 'www.naver.com'
-		}
-	});
-};
-
-var departure = getParameterByName('departure');
-var destination = getParameterByName('destination');
-document.querySelector('#departure').innerHTML = (departure.indexOf("대한민국") != -1 ? departure.substring(4) : departure);
-document.querySelector('#destination').innerHTML = (destination.indexOf("대한민국") != -1 ? destination.substring(4) : destination);
-
-departureLongitude = getParameterByName('depLng');
-departureLatitude = getParameterByName('depLat');
-destinationLongitude = getParameterByName('desLng');
-destinationLatitude = getParameterByName('desLat');
-directionsService = new olleh.maps.DirectionsService('frKMcOKXS*l9iO5g');
 var control = olleh.maps.control.Control;
-
-map = new olleh.maps.Map('map_div', {
-	center : new olleh.maps.LatLng(departureLatitude, departureLongitude),
+var map = new olleh.maps.Map('map_div', {
+	center : new olleh.maps.LatLng(departure.latitude, departure.longitude),
 	zoom : 7,
 	zoomControl: true,
 	copyrightControl: false,
@@ -95,7 +28,7 @@ map = new olleh.maps.Map('map_div', {
 	disablePinchZoom: false,
 	disableMultiTabZoom: false,
 	zoomControlOptions: {
-		position: control.TOP_RIGHT, 
+		position: control.TOP_RIGHT,
 		direction: control.VERTICAL,
 		top: 130,
 		right: 20,
@@ -103,149 +36,45 @@ map = new olleh.maps.Map('map_div', {
 	}
 });
 
-recommendedRoute();
+if(getParameterByName("key") != null) {
+	dbKey = getParameterByName("key");
+	goThisWayButton.click();
+}else {
+    dbKey = generateDatabaseKey();
+    setGeolocation();
+}
 
+recommendedRoute();
 modalDialog.modal();
 modalCallingDialog.modal();
 modalCalledDialog.modal();
 
-if(getParameterByName("key") != null) {
-	dbKey = getParameterByName("key");
-	goThisWayButton.click();
+function loadSearchPage() {
+	location.replace("/");
 }
 
-function getParameterByName(name, url) {
-	if (!url) {
-		url = window.location.href;
-	}
-	name = name.replace(/[\[\]]/g, "\\$&");
-	var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
-	results = regex.exec(url);
-	if (!results) return null;
-	if (!results[2]) return '';
-	return decodeURIComponent(results[2].replace(/\+/g, " "));
-}
+function goThisWay() {
+	blinkTaxiMockModal();
 
-function clearMap() {
-	var polylines = document.querySelectorAll('#layer_container svg polyline');
-	if(polylines.length > 0){
-		polylines.forEach(function(polyline) {
-			polyline.remove();
-		});
-	}
-	map.getLayer("Vector")._vectors = [];
-	map.setCenter(new olleh.maps.LatLng(departureLatitude, departureLongitude)); 
-}
+	document.querySelectorAll(".go-away").forEach(function(component) {
+		hideComponent(component);
+	});
+    showComponent(shareButton);
 
-function recommendedRoute() {
-	clearMap();
-	directionsService.route({
-		origin : new olleh.maps.UTMK.valueOf(new olleh.maps.LatLng(departureLatitude, departureLongitude)),
-		destination : new olleh.maps.UTMK.valueOf(new olleh.maps.LatLng(destinationLatitude, destinationLongitude)),
-		projection : olleh.maps.DirectionsProjection.UTM_K, 
-		travelMode : olleh.maps.DirectionsTravelMode.DRIVING,
-		priority : olleh.maps.DirectionsDrivePriority.PRIORITY_3
-	}, 
-	getCallbackString(olleh.maps.DirectionsDrivePriority.PRIORITY_3)
-	); 
-}	
-
-function shortestRoute() {
-	clearMap();
-	directionsService.route({
-		origin : new olleh.maps.UTMK.valueOf(new olleh.maps.LatLng(departureLatitude, departureLongitude)),
-		destination : new olleh.maps.UTMK.valueOf(new olleh.maps.LatLng(destinationLatitude, destinationLongitude)),
-		projection : olleh.maps.DirectionsProjection.UTM_K, 
-		travelMode : olleh.maps.DirectionsTravelMode.DRIVING,
-		priority : olleh.maps.DirectionsDrivePriority.PRIORITY_0
-	}, 
-	getCallbackString(olleh.maps.DirectionsDrivePriority.PRIORITY_0)
-	); 
-}
-
-function freeRoute() {
-	clearMap();
-	directionsService.route({
-		origin : new olleh.maps.UTMK.valueOf(new olleh.maps.LatLng(departureLatitude, departureLongitude)),
-		destination : new olleh.maps.UTMK.valueOf(new olleh.maps.LatLng(destinationLatitude, destinationLongitude)),
-		projection : olleh.maps.DirectionsProjection.UTM_K, 
-		travelMode : olleh.maps.DirectionsTravelMode.DRIVING,
-		priority : olleh.maps.DirectionsDrivePriority.PRIORITY_2
-	}, 
-	getCallbackString(olleh.maps.DirectionsDrivePriority.PRIORITY_2)
-	);
-}
-
-function getBoundsArray(routeList) {
-	var routesArray = routeList.result.routes;
-	var boundsArray = [];
-
-	for(var cnt=0; cnt < routesArray.length-1; cnt++) {
-		var fitstPointX = routesArray[cnt].point.x;
-		var fitstPointY = routesArray[cnt].point.y;
-		var secondPointX = routesArray[cnt+1].point.x;
-		var secondPointY = routesArray[cnt+1].point.y;
-		var lessX, moreX, lessY, moreY;
-
-		if(fitstPointX <= secondPointX) {
-			lessX = fitstPointX;
-			moreX = secondPointX;
-		} else {
-			lessX = secondPointX;
-			moreX = fitstPointX;
-		}
-
-		if(fitstPointY <= secondPointY) {
-			lessY = fitstPointY;
-			moreY = secondPointY;
-		} else {
-			lessY = secondPointY;
-			moreY = fitstPointY;
-		}
-		var leftBottom = new olleh.maps.UTMK(lessX, lessY);
-		var rightTop = new olleh.maps.UTMK(moreX, moreY);
-		boundsArray.push(new olleh.maps.Bounds(leftBottom, rightTop));
-	}
-	return boundsArray;
-}
-
-function departureToDestinationMarker() {
-	var departureIcon = {
-			url: '../lib/images/start.png',
-			size: new olleh.maps.Size(50, 50),
-			anchor: new olleh.maps.Point(27, 22)
-		};
-	
-	var departureUTMK_x = recommended_direction_result.result.links[0].x;
-	var departureUTMK_y = recommended_direction_result.result.links[0].y;
-	var departureMarker = new olleh.maps.overlay.Marker({
-			position: new olleh.maps.UTMK(departureUTMK_x, departureUTMK_y),
-			map: map,
-			icon: {
-				url: '../lib/images/start.png'
-			}
-		});
-	departureMarker.setFlat(true);
-    departureMarker.setIcon(departureIcon);
-
-	var destinationIcon = {
-			url: '../lib/images/pin.png',
-			size: new olleh.maps.Size(50, 50),
-			anchor: new olleh.maps.Point(27, 22)
-		};
-
-	var lastIndexOfArray = recommended_direction_result.result.links.length-1;
-	var destinationUTMK_x = recommended_direction_result.result.links[lastIndexOfArray].x;
-	var destinationUTMK_y = recommended_direction_result.result.links[lastIndexOfArray].y;
-	var destinationMarker = new olleh.maps.overlay.Marker({
-			position: new olleh.maps.UTMK(destinationUTMK_x, destinationUTMK_y),
-			map: map,
-			icon: {
-				url: '../lib/images/pin.png'
-			}
-		});
-	destinationMarker.setFlat(true);
-	destinationMarker.setIcon(destinationIcon);
+	receiveCoordinatesByKey(dbKey, function(coordinates) {
+        if(marker != undefined){
+            marker.erase();
+        }
+        var position = new olleh.maps.LatLng(coordinates.latitude, coordinates.longitude);
+        marker = new olleh.maps.overlay.Marker({
+            position: position,
+            map: map,
+            icon: {
+                url: '../lib/images/my_location.png'
+            }
+        });
+        marker.setFlat(true);
+    });
 }
 
 function setGeolocation() {
@@ -276,26 +105,102 @@ function setGeolocation() {
 	}, null, options);
 }
 
-function receiveCoordinatesByKey(key){
-	let firebaseRef = firebaseDB.ref(key);
+function blinkTaxiMockModal() {
+	modalCallingDialog.modal('open');
+	goThisWayButton.innerHTML = "호출 취소";
+	setTimeout(function(){
+		modalCallingDialog.modal('close');
+		modalCalledDialog.modal('open');
+	}, 	2000);
+	modalCalledDialog.modal('close');
+};
 
-	firebaseRef.on('value', function(snapshot) {
-		if(snapshot.val() == null){
-			return;
-		}
+function hideComponent(component) {
+    component.className += " disappear";
+}
 
-		if(marker != undefined){
-			marker.erase();
+function showComponent(component) {
+    component.className = component.className.replace(" disappear", "");
+}
+
+function activateKakao(){
+	Kakao.init('3b1c9bd1870f46083d79ba8115f7f304');
+	// 카카오톡 링크 버튼을 생성합니다. 처음 한번만 호출하면 됩니다.
+	Kakao.Link.createTalkLinkButton({
+		container: '#kakao-link-btn',
+		label: '지인의 위치를 확인해주세요!',
+		image: {
+			//src: '../lib/images/share_link.jpeg',
+			src: 'https://wayknower.firebaseapp.com/lib/images/share_link.jpeg',
+			width: '300',
+			height: '200'
+		},
+		webButton: {
+			text: '확인하러가기',
+			//url: window.location.href + '&key=' + dbKey
+			url: 'www.naver.com'
 		}
-		const coordinates = snapshot.val();
-		var position = new olleh.maps.LatLng(coordinates.latitude, coordinates.longitude);
-		marker = new olleh.maps.overlay.Marker({
-			position: position,
-			map: map,
-			icon: {
-				url: '../lib/images/my_location.png'
-			}
-		});
-		marker.setFlat(true);
 	});
+};
+
+function recommendedRoute() {
+	clearMap();
+	directionsService.route({
+		origin : new olleh.maps.UTMK.valueOf(new olleh.maps.LatLng(departure.latitude, departure.longitude)),
+		destination : new olleh.maps.UTMK.valueOf(new olleh.maps.LatLng(destination.latitude, destination.longitude)),
+		projection : olleh.maps.DirectionsProjection.UTM_K, 
+		travelMode : olleh.maps.DirectionsTravelMode.DRIVING,
+		priority : olleh.maps.DirectionsDrivePriority.PRIORITY_3
+	}, 
+	getCallbackString(olleh.maps.DirectionsDrivePriority.PRIORITY_3)
+	); 
+}	
+
+function shortestRoute() {
+	clearMap();
+	directionsService.route({
+		origin : new olleh.maps.UTMK.valueOf(new olleh.maps.LatLng(departure.latitude, departure.longitude)),
+		destination : new olleh.maps.UTMK.valueOf(new olleh.maps.LatLng(destination.latitude, destination.longitude)),
+		projection : olleh.maps.DirectionsProjection.UTM_K, 
+		travelMode : olleh.maps.DirectionsTravelMode.DRIVING,
+		priority : olleh.maps.DirectionsDrivePriority.PRIORITY_0
+	}, 
+	getCallbackString(olleh.maps.DirectionsDrivePriority.PRIORITY_0)
+	); 
+}
+
+function freeRoute() {
+	clearMap();
+	directionsService.route({
+		origin : new olleh.maps.UTMK.valueOf(new olleh.maps.LatLng(departure.latitude, departure.longitude)),
+		destination : new olleh.maps.UTMK.valueOf(new olleh.maps.LatLng(destination.latitude, destination.longitude)),
+		projection : olleh.maps.DirectionsProjection.UTM_K, 
+		travelMode : olleh.maps.DirectionsTravelMode.DRIVING,
+		priority : olleh.maps.DirectionsDrivePriority.PRIORITY_2
+	}, 
+	getCallbackString(olleh.maps.DirectionsDrivePriority.PRIORITY_2)
+	);
+}
+
+function clearMap() {
+	var polylines = document.querySelectorAll('#layer_container svg polyline');
+	if(polylines.length > 0){
+		polylines.forEach(function(polyline) {
+			polyline.remove();
+		});
+	}
+	map.getLayer("Vector")._vectors = [];
+	map.setCenter(new olleh.maps.LatLng(departure.latitude, departure.longitude));
+}
+
+function getParameterByName(name, url) {
+	if (!url) {
+		url = window.location.href;
+	}
+	name = name.replace(/[\[\]]/g, "\\$&");
+	var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+	results = regex.exec(url);
+	if (!results) return null;
+	if (!results[2]) return '';
+	return decodeURIComponent(results[2].replace(/\+/g, " "));
 }

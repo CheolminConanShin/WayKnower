@@ -1,35 +1,17 @@
-const SHORTEST_PATH_COLOR = "#01afaf";
-const RECOMMENDED_PATH_COLOR = "#01afaf";
-const FREEWAY_PATH_COLOR = "#01afaf";
-const TRAFFIC_PATH_COLOR = "purple";
-
 const SELECTED_ROUTE_COLOR = "#01afaf";
-const UNSELECTED_ROUTE_COLOR = "#9b9b9b";
-
 const DEFAULT_TAXI_FEE = 3000;
-
-
 var shortest_direction_result, recommended_direction_result, freeway_direction_result;
-
-const routeDirectionListBox = document.querySelector("#routeDirectionList");
-const routeDirectionDetails = document.querySelector("#routeDirectionDetails")
+var routeDirectionListBox = document.querySelector("#routeDirectionList");
+var routeDirectionDetails = document.querySelector("#routeDirectionDetails")
 
 function shortest_path_service_callback(data) {
 	shortest_direction_result = directionsService.parseRoute(data);
 	var directionsRendererOptions = {
 		directions : shortest_direction_result, // 길찾기 결과. DirectionsService 의 parseRoute 결과
 		map : map,						// 길찾기 결과를 렌더링할 지도
-		keepView : false,				// 현재 뷰 유지 여부. true 이면 현재 뷰를 변경하지 않음. 디폴트 false
 		offMarkers : true,				// 마커 표시 억제 여부. true 이면 마커를 표시하지 않음. 디폴트 false
-		markerOptions : {			// 마커 옵션
-			draggable : false,			// 마커 드래깅 가능 여부. true 이면 마커를 드래그 할 수 있음. 디폴트 false,
-			caption : 'test caption',	// 마커 캡션 설정.
-			title : '',					// 마커 타이틀 설정.
-			flat : true					// 마커의 그림자 표시여부. true이면 마커 그림자가 표시되지 않음. 디폴트 false
-		},
-		offPolylines : false,			// 경로 폴리라인 억제 여부. true 이면 경로를 표시하지 않음. 디폴트 false
 		polylineOptions : {				// 경로 폴리라인 스타일 옵션
-			strokeColor : SHORTEST_PATH_COLOR,	// 경로 폴리라인 칼라. 디폴트 #ff3131
+			strokeColor : SELECTED_ROUTE_COLOR,	// 경로 폴리라인 칼라. 디폴트 #ff3131
 			strokeWeight : 3	// 경로 폴리라인 두께. 디폴트 5 
 		}
 	}; 
@@ -46,17 +28,9 @@ function recommended_path_service_callback(data) {
 	var directionsRendererOptions = {
 		directions : recommended_direction_result, // 길찾기 결과. DirectionsService 의 parseRoute 결과
 		map : map,						// 길찾기 결과를 렌더링할 지도
-		keepView : false,				// 현재 뷰 유지 여부. true 이면 현재 뷰를 변경하지 않음. 디폴트 false
 		offMarkers : true,				// 마커 표시 억제 여부. true 이면 마커를 표시하지 않음. 디폴트 false
-		markerOptions : {				// 마커 옵션
-			draggable : false,			// 마커 드래깅 가능 여부. true 이면 마커를 드래그 할 수 있음. 디폴트 false,
-			caption : 'test caption',	// 마커 캡션 설정.
-			title : '',					// 마커 타이틀 설정.
-			flat : true					// 마커의 그림자 표시여부. true이면 마커 그림자가 표시되지 않음. 디폴트 false
-		},
-		offPolylines : false,			// 경로 폴리라인 억제 여부. true 이면 경로를 표시하지 않음. 디폴트 false
 		polylineOptions : {				// 경로 폴리라인 스타일 옵션
-			strokeColor : RECOMMENDED_PATH_COLOR,	// 경로 폴리라인 칼라. 디폴트 #ff3131
+			strokeColor : SELECTED_ROUTE_COLOR,// 경로 폴리라인 칼라. 디폴트 #ff3131
 			strokeWeight : 3			// 경로 폴리라인 두께. 디폴트 5 
 		},
 	}; 
@@ -74,17 +48,9 @@ function freeway_path_service_callback(data) {
 	var directionsRendererOptions = {
 		directions : freeway_direction_result, // 길찾기 결과. DirectionsService 의 parseRoute 결과
 		map : map,						// 길찾기 결과를 렌더링할 지도
-		keepView : false,				// 현재 뷰 유지 여부. true 이면 현재 뷰를 변경하지 않음. 디폴트 false
 		offMarkers : true,				// 마커 표시 억제 여부. true 이면 마커를 표시하지 않음. 디폴트 false
-		markerOptions : {				// 마커 옵션
-			draggable : false,			// 마커 드래깅 가능 여부. true 이면 마커를 드래그 할 수 있음. 디폴트 false,
-			caption : 'test caption',	// 마커 캡션 설정.
-			title : '',					// 마커 타이틀 설정.
-			flat : true					// 마커의 그림자 표시여부. true이면 마커 그림자가 표시되지 않음. 디폴트 false
-		},
-		offPolylines : false,			// 경로 폴리라인 억제 여부. true 이면 경로를 표시하지 않음. 디폴트 false
 		polylineOptions : {				// 경로 폴리라인 스타일 옵션
-			strokeColor : FREEWAY_PATH_COLOR,	// 경로 폴리라인 칼라. 디폴트 #ff3131
+			strokeColor : SELECTED_ROUTE_COLOR,// 경로 폴리라인 칼라. 디폴트 #ff3131
 			strokeWeight : 3			// 경로 폴리라인 두께. 디폴트 5 
 		},
 	}; 
@@ -166,4 +132,76 @@ function getDistance(directionsResult) {
 function getFee(directionsResult) {
 	var distanceInKm = directionsResult.result.total_distance.value/1000;
 	return "택시비 약 " + (Math.floor(distanceInKm) * 1000 <= DEFAULT_TAXI_FEE ? DEFAULT_TAXI_FEE : Math.floor(distanceInKm) * 1000) + "원";
+}
+
+function getBoundsArray(routeList) {
+	var routesArray = routeList.result.routes;
+	var boundsArray = [];
+
+	for(var cnt=0; cnt < routesArray.length-1; cnt++) {
+		var fitstPointX = routesArray[cnt].point.x;
+		var fitstPointY = routesArray[cnt].point.y;
+		var secondPointX = routesArray[cnt+1].point.x;
+		var secondPointY = routesArray[cnt+1].point.y;
+		var lessX, moreX, lessY, moreY;
+
+		if(fitstPointX <= secondPointX) {
+			lessX = fitstPointX;
+			moreX = secondPointX;
+		} else {
+			lessX = secondPointX;
+			moreX = fitstPointX;
+		}
+
+		if(fitstPointY <= secondPointY) {
+			lessY = fitstPointY;
+			moreY = secondPointY;
+		} else {
+			lessY = secondPointY;
+			moreY = fitstPointY;
+		}
+		var leftBottom = new olleh.maps.UTMK(lessX, lessY);
+		var rightTop = new olleh.maps.UTMK(moreX, moreY);
+		boundsArray.push(new olleh.maps.Bounds(leftBottom, rightTop));
+	}
+	return boundsArray;
+}
+
+function departureToDestinationMarker() {
+	var departureIcon = {
+			url: '../lib/images/start.png',
+			size: new olleh.maps.Size(50, 50),
+			anchor: new olleh.maps.Point(27, 22)
+		};
+
+	var departureUTMK_x = recommended_direction_result.result.links[0].x;
+	var departureUTMK_y = recommended_direction_result.result.links[0].y;
+	var departureMarker = new olleh.maps.overlay.Marker({
+			position: new olleh.maps.UTMK(departureUTMK_x, departureUTMK_y),
+			map: map,
+			icon: {
+				url: '../lib/images/start.png'
+			}
+		});
+	departureMarker.setFlat(true);
+    departureMarker.setIcon(departureIcon);
+
+	var destinationIcon = {
+			url: '../lib/images/pin.png',
+			size: new olleh.maps.Size(50, 50),
+			anchor: new olleh.maps.Point(27, 22)
+		};
+
+	var lastIndexOfArray = recommended_direction_result.result.links.length-1;
+	var destinationUTMK_x = recommended_direction_result.result.links[lastIndexOfArray].x;
+	var destinationUTMK_y = recommended_direction_result.result.links[lastIndexOfArray].y;
+	var destinationMarker = new olleh.maps.overlay.Marker({
+			position: new olleh.maps.UTMK(destinationUTMK_x, destinationUTMK_y),
+			map: map,
+			icon: {
+				url: '../lib/images/pin.png'
+			}
+		});
+	destinationMarker.setFlat(true);
+	destinationMarker.setIcon(destinationIcon);
 }
