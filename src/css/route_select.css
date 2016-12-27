@@ -178,16 +178,19 @@ nav .brand-logo {
 
 #modalDialog {
     top: 50% !important;
+    box-shadow: 0 0 0 0 !important;
 }
 
 #modalCallingDialog {
     top: 50% !important;
     background:  rgba(0,0,0,0);
+    box-shadow: 0 0 0 0 !important;
 }
 
 #modalCalledDialog {
     top: 50% !important;
     background:  rgba(0,0,0,0);
+    box-shadow: 0 0 0 0 !important;
 }
 
 .modal-content {
@@ -207,7 +210,7 @@ nav .brand-logo {
 
 .modal-content .calling {
     color: #50e3c2 !important;
-    font-size: 2vh;
+    font-size: 2.5vh;
     top: 50% !important;
     text-align: center;
     padding: 0 0 0 0;
@@ -215,7 +218,7 @@ nav .brand-logo {
 
 .modal-content .called {
     color: #50e3c2 !important;
-    font-size: 2vh;
+    font-size: 2.5vh;
     top: 50% !important;
     text-align: center;
     padding: 0 0 0 0;
