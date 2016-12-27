@@ -40,8 +40,8 @@ if(getParameterByName("key") != null) {
 	dbKey = getParameterByName("key");
 	goThisWayButton.click();
 }else {
-    dbKey = generateDatabaseKey();
-    setGeolocation();
+	dbKey = generateDatabaseKey();
+	setGeolocation();
 }
 
 recommendedRoute();
@@ -59,7 +59,7 @@ function goThisWay() {
 	document.querySelectorAll(".go-away").forEach(function(component) {
 		hideComponent(component);
 	});
-    showComponent(shareButton);
+	showComponent(shareButton);
 
 	receiveCoordinatesByKey(dbKey, function(coordinates) {
         if(marker != undefined){
@@ -116,11 +116,11 @@ function blinkTaxiMockModal() {
 };
 
 function hideComponent(component) {
-    component.className += " disappear";
+	component.className += " disappear";
 }
 
 function showComponent(component) {
-    component.className = component.className.replace(" disappear", "");
+	component.className = component.className.replace(" disappear", "");
 }
 
 function activateKakao(){
