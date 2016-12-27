@@ -177,12 +177,23 @@ nav .brand-logo {
 }
 
 #modalDialog {
-    top: 39% !important;
+    top: 50% !important;
+}
+
+#modalCallingDialog {
+    top: 50% !important;
+    background:  rgba(0,0,0,0);
+}
+
+#modalCalledDialog {
+    top: 50% !important;
+    background:  rgba(0,0,0,0);
 }
 
 .modal-content {
     padding: 12px 20px 12px 20px;
 }
+
 .modal-content h6 {
     font-size: 2.5vh;
     font-weight: bold;
@@ -192,6 +203,22 @@ nav .brand-logo {
 .modal-content p {
     font-size: 2vh;
     color: #666666;
+}
+
+.modal-content .calling {
+    color: #50e3c2 !important;
+    font-size: 2vh;
+    top: 50% !important;
+    text-align: center;
+    padding: 0 0 0 0;
+}
+
+.modal-content .called {
+    color: #50e3c2 !important;
+    font-size: 2vh;
+    top: 50% !important;
+    text-align: center;
+    padding: 0 0 0 0;
 }
 
 .modal-footer a {
@@ -207,16 +234,4 @@ nav .brand-logo {
 
 .modal-overlay {
     background: rgba(0,0,0,0.4);
-}
-
-#modalCallingDialog {
-    color: #50e3c2;
-    font-size: 3vh;
-    top: 39% !important;
-}
-
-#modalCallingDialog {
-    color: #50e3c2;
-    font-size: 3vh;
-    top: 50% !important;
 }

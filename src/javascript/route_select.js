@@ -112,7 +112,10 @@ function blinkTaxiMockModal() {
 		modalCallingDialog.modal('close');
 		modalCalledDialog.modal('open');
 	}, 	2000);
-	modalCalledDialog.modal('close');
+	setTimeout(function(){
+		modalCalledDialog.modal('close');
+	}, 	4000);
+
 };
 
 function hideComponent(component) {

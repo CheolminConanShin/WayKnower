@@ -18,7 +18,7 @@ var documentReady = function() {
 		var destinationLatitude = destinationInput.getAttribute("lat");
 		var destinationLongitude = destinationInput.getAttribute("lng");
 
-		location.replace("/html/route_select.html?"
+		location.replace("../src/html/route_select.html?"
 		+ "departure="+ departureInput.value + "&destination=" + destinationInput.value
 		+ "&depLat=" + departureLatitude + "&depLng=" + departureLongitude
 		+ "&desLat=" + destinationLatitude + "&desLng=" + destinationLongitude);
