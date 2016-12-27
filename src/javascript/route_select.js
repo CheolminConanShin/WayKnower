@@ -55,12 +55,6 @@ function loadSearchPage() {
 
 function goThisWay() {
 	blinkTaxiMockModal();
-
-	document.querySelectorAll(".go-away").forEach(function(component) {
-		hideComponent(component);
-	});
-	showComponent(shareButton);
-
 	receiveCoordinatesByKey(dbKey, function(coordinates) {
         if(marker != undefined){
             marker.erase();
@@ -114,6 +108,10 @@ function blinkTaxiMockModal() {
 	}, 	2000);
 	setTimeout(function(){
 		modalCalledDialog.modal('close');
+		document.querySelectorAll(".go-away").forEach(function(component) {
+			hideComponent(component);
+		});
+		showComponent(shareButton);
 	}, 	4000);
 
 };
