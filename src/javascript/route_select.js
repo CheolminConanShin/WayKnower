@@ -41,7 +41,6 @@ if(getParameterByName("key") != null) {
 	goThisWayButton.click();
 }else {
 	dbKey = generateDatabaseKey();
-	setGeolocation();
 }
 
 recommendedRoute();
@@ -112,7 +111,12 @@ function blinkTaxiMockModal() {
 			hideComponent(component);
 		});
 		showComponent(shareButton);
+		setGeolocation();
 	}, 	4000);
+	setTimeout(function(){
+		setGeolocation();
+	}, 	7000);
+
 
 };
 
