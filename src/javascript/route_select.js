@@ -2,10 +2,14 @@ var priorityType;
 var boundList = [];
 var dbKey, marker;
 var taxiCallingModal, taxiCalledModal;
+var currentPosition;
+
 var directionsService = new olleh.maps.DirectionsService('frKMcOKXS*l9iO5g');
 
 const goThisWayButton = document.querySelector(".go-this-way-button");
 const shareButton = document.querySelector(".share-button");
+const currentPositionButton = document.querySelector(".current-location-button");
+
 var modalDialog = $("#modalDialog");
 var modalCallingDialog = $("#modalCallingDialog");
 var modalCalledDialog = $("#modalCalledDialog");
@@ -79,7 +83,7 @@ function setGeolocation() {
 
 	navigator.geolocation.watchPosition(function(position) {
 
-		var currentPosition = new olleh.maps.LatLng(position.coords.latitude, position.coords.longitude);
+		currentPosition = new olleh.maps.LatLng(position.coords.latitude, position.coords.longitude);
 		var boundCheckFlag = false;
 		boundList.forEach(function(bound) {
 			if(bound.almostEquals(new olleh.maps.Bounds(olleh.maps.UTMK.valueOf(currentPosition), olleh.maps.UTMK.valueOf(currentPosition)), 500)) {
@@ -91,8 +95,10 @@ function setGeolocation() {
 
 		if(!boundCheckFlag) {
 			modalDialog.modal('open');
+			fincCurrentLocation();
 			window.navigator.vibrate(1000);
 		}else{
+			fincCurrentLocation();
 			console.log("잘가고 있구만!");
 		}
 	}, null, options);
@@ -111,6 +117,7 @@ function blinkTaxiMockModal() {
 			hideComponent(component);
 		});
 		showComponent(shareButton);
+		showComponent(currentPositionButton);
 		setGeolocation();
 	}, 	4000);
 	setTimeout(function(){
@@ -128,14 +135,18 @@ function showComponent(component) {
 	component.className = component.className.replace(" disappear", "");
 }
 
+function fincCurrentLocation() {
+	if(currentPosition != null) {
+		map.setCenter(new olleh.maps.LatLng(currentPosition.y, currentPosition.x));
+	}
+}
+
 function activateKakao(){
 	Kakao.init('3b1c9bd1870f46083d79ba8115f7f304');
-	// 카카오톡 링크 버튼을 생성합니다. 처음 한번만 호출하면 됩니다.
 	Kakao.Link.createTalkLinkButton({
 		container: '#kakao-link-btn',
 		label: '지인의 위치를 확인해주세요!',
 		image: {
-			//src: '../lib/images/share_link.jpeg',
 			src: 'https://wayknower.firebaseapp.com/lib/images/share_link.jpeg',
 			width: '300',
 			height: '200'
